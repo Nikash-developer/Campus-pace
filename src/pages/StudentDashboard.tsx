@@ -67,16 +67,6 @@ interface QuizQuestion {
 }
 
 const mockPapers: QuestionPaper[] = [
-  { id: 1, subject: 'Applied Mathematics-III', year: '2023', semester: 'Semester 3', type: 'Regular', url: 'https://muquestionpapers.com/FE/Sem1/Applied_Mathematics_1_Dec_2023.pdf' },
-  { id: 2, subject: 'Data Structures & Algorithms', year: '2023', semester: 'Semester 3', type: 'Regular', url: 'https://muquestionpapers.com/SE/COMP/Sem3/Data_Structures_Dec_2023.pdf' },
-  { id: 3, subject: 'Digital Logic & Computer Architecture', year: '2022', semester: 'Semester 3', type: 'Regular', url: 'https://muquestionpapers.com/SE/COMP/Sem3/Digital_Logic_Computer_Architecture_May_2022.pdf' },
-  { id: 4, subject: 'Database Management Systems', year: '2023', semester: 'Semester 4', type: 'Regular', url: 'https://muquestionpapers.com/SE/COMP/Sem4/Database_Management_System_Dec_2023.pdf' },
-  { id: 5, subject: 'Operating Systems', year: '2022', semester: 'Semester 4', type: 'KT', url: 'https://muquestionpapers.com/SE/COMP/Sem4/Operating_System_May_2022.pdf' },
-  { id: 6, subject: 'Computer Networks', year: '2023', semester: 'Semester 5', type: 'Regular', url: 'https://muquestionpapers.com/TE/COMP/Sem5/Computer_Network_Dec_2023.pdf' },
-  { id: 7, subject: 'Artificial Intelligence', year: '2023', semester: 'Semester 6', type: 'Regular', url: 'https://muquestionpapers.com/TE/COMP/Sem6/Artificial_Intelligence_Dec_2023.pdf' },
-  { id: 8, subject: 'Software Engineering', year: '2022', semester: 'Semester 6', type: 'Regular', url: 'https://muquestionpapers.com/TE/COMP/Sem6/Software_Engineering_May_2022.pdf' },
-  { id: 9, subject: 'Cloud Computing', year: '2023', semester: 'Semester 7', type: 'Regular', url: 'https://muquestionpapers.com/BE/COMP/Sem7/Cloud_Computing_Dec_2023.pdf' },
-  { id: 10, subject: 'Big Data Analytics', year: '2023', semester: 'Semester 7', type: 'Regular', url: 'https://muquestionpapers.com/BE/COMP/Sem7/Big_Data_Analytics_Dec_2023.pdf' },
   ...allQuestionPapers
 ];
 
