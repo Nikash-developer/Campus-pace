@@ -160,13 +160,13 @@ export default function FacultyDashboard() {
           </div>
         </div>
         <nav className="hidden lg:flex items-center gap-8 relative mr-8">
-          {['Notices', 'Assignments'].map(nav => (
+          {['Notices', 'Assignments', 'Students'].map(nav => (
             <button
               key={nav}
               onClick={() => setActiveNav(nav)}
               className={`text-sm font-bold transition-colors relative py-1 ${activeNav === nav ? 'text-[#22C55E]' : 'text-slate-500 hover:text-slate-900'}`}
             >
-              {nav}
+              {nav === 'Students' ? 'Student List' : nav}
               {activeNav === nav && (
                 <motion.div layoutId="navUnderline" className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#22C55E] rounded-full" />
               )}
@@ -257,7 +257,7 @@ export default function FacultyDashboard() {
                   <button
                     key={item.id}
                     onClick={() => {
-                      if (item.id === 'Notices' || item.id === 'Assignments') {
+                      if (['Notices', 'Assignments', 'Students'].includes(item.id)) {
                         setActiveNav(item.id);
                       } else {
                         handleShowToast(`${item.label} module coming soon`);
@@ -584,6 +584,17 @@ export default function FacultyDashboard() {
                 </motion.div>
               </div>
             </motion.main>
+          ) : activeNav === 'Students' ? (
+            <motion.div
+              key="students"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+              className="flex-1 h-full"
+            >
+              <StudentListView stats={stats} />
+            </motion.div>
           ) : activeNav === 'Notices' ? (
             <motion.div
               key="notices"
@@ -774,7 +785,218 @@ export default function FacultyDashboard() {
   );
 }
 
-// Sub-components
+// Student ListView Component
+function StudentListView({ stats }: { stats: any }) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const students = [
+    { id: 1, name: "Alice Johnson", major: "Env. Science", gpa: 3.8, performance: 92, attendance: "98%", status: "Excellent", assignments: 12, ecoPoints: 450 },
+    { id: 2, name: "Bob Smith", major: "Civil Engineering", gpa: 3.5, performance: 85, attendance: "92%", status: "Good", assignments: 10, ecoPoints: 320 },
+    { id: 3, name: "Charlie Brown", major: "Architecture", gpa: 2.9, performance: 72, attendance: "85%", status: "Average", assignments: 8, ecoPoints: 150 },
+    { id: 4, name: "Diana Prince", major: "Biology", gpa: 3.7, performance: 88, attendance: "95%", status: "Good", assignments: 11, ecoPoints: 380 },
+    { id: 5, name: "Evan Wright", major: "Computer Science", gpa: 3.2, performance: 80, attendance: "90%", status: "Average", assignments: 9, ecoPoints: 210 },
+    { id: 6, name: "Fiona Gallagher", major: "Humanities", gpa: 3.9, performance: 95, attendance: "99%", status: "Excellent", assignments: 13, ecoPoints: 520 },
+    { id: 7, name: "George Miller", major: "Env. Science", gpa: 3.4, performance: 82, attendance: "91%", status: "Good", assignments: 10, ecoPoints: 290 },
+    { id: 8, name: "Hannah Lee", major: "Geology", gpa: 3.6, performance: 84, attendance: "93%", status: "Good", assignments: 11, ecoPoints: 340 }
+  ];
+
+  const filteredStudents = students.filter(s =>
+    s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    s.major.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const performanceData = [65, 78, 82, 75, 88, 92, 85];
+  const months = ['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
+
+  return (
+    <div className="flex-1 max-w-[1600px] w-full mx-auto p-4 lg:p-8 flex flex-col gap-8 pb-12 overflow-y-auto h-full styled-scrollbar">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <h1 className="text-3xl lg:text-5xl font-black text-slate-900 leading-tight">Student Performance Analytics</h1>
+          <p className="text-slate-500 font-medium mt-2">Comprehensive overview of academic excellence and environmental engagement.</p>
+        </div>
+        <div className="relative w-full md:w-80">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+          <input
+            type="text"
+            placeholder="Search students..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-12 pr-4 text-sm font-bold focus:ring-4 focus:ring-[#DCFCE7] transition-all"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Class Performance Graph */}
+        <div className="lg:col-span-2 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm p-8 flex flex-col">
+          <div className="flex items-center justify-between mb-10">
+            <div>
+              <h3 className="text-xl font-black text-slate-900">Class Performance Trend</h3>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Average Grades % over time</p>
+            </div>
+            <div className="flex gap-2">
+              <span className="flex items-center gap-2 text-[10px] font-black text-slate-400 px-3 py-1 bg-slate-50 rounded-full border border-slate-100">
+                <div className="w-2 h-2 rounded-full bg-[#22C55E]" /> Avg Score
+              </span>
+            </div>
+          </div>
+
+          <div className="flex-1 flex items-end justify-between gap-4 h-64 relative pt-12">
+            {/* Grid lines */}
+            <div className="absolute inset-0 flex flex-col justify-between pointer-events-none pb-4">
+              {[1, 2, 3, 4].map(idx => <div key={idx} className="w-full border-t border-slate-50" />)}
+            </div>
+
+            {performanceData.map((val, idx) => (
+              <div key={idx} className="flex-1 flex flex-col items-center gap-4 group cursor-pointer relative z-10">
+                <div className="flex-1 w-full flex flex-col justify-end">
+                  <motion.div
+                    initial={{ height: 0 }}
+                    animate={{ height: `${val}%` }}
+                    transition={{ duration: 1, delay: idx * 0.1, type: "spring" }}
+                    className="w-full bg-gradient-to-t from-[#E8F5E9] to-[#22C55E] rounded-t-2xl relative overflow-hidden shadow-sm group-hover:brightness-110 group-hover:shadow-lg transition-all"
+                  >
+                    <div className="absolute top-2 left-1/2 -translate-x-1/2 text-[10px] font-black text-white bg-black/10 px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                      {val}%
+                    </div>
+                  </motion.div>
+                </div>
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{months[idx]}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Global Stats */}
+        <div className="flex flex-col gap-6">
+          <div className="flex-1 bg-gradient-to-br from-[#166534] to-[#22C55E] rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-xl shadow-[#22C55E]/20">
+            <div className="absolute -right-8 -top-8 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
+            <h4 className="text-lg font-black mb-6 flex items-center gap-2">
+              <Sparkles size={20} /> Class Insights
+            </h4>
+            <div className="space-y-6">
+              <div>
+                <p className="text-xs font-bold text-white/60 uppercase tracking-widest mb-1">Average GPA</p>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-4xl font-black">3.48</span>
+                  <span className="text-xs text-green-200">+0.12 this sem</span>
+                </div>
+              </div>
+              <div className="h-px bg-white/10" />
+              <div>
+                <p className="text-xs font-bold text-white/60 uppercase tracking-widest mb-1">Total Assignments Graded</p>
+                <span className="text-4xl font-black">{stats.total}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-sm flex items-center justify-between group hover:border-[#22C55E]/30 transition-all cursor-pointer">
+            <div>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Environmental Impact</p>
+              <h3 className="text-2xl font-black text-slate-900">{stats.pages * 0.5} <span className="text-sm font-bold text-slate-400">kg CO2</span></h3>
+            </div>
+            <div className="w-14 h-14 bg-[#E8F5E9] text-[#22C55E] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+              <TreePine size={28} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Student List Table */}
+      <div className="bg-white rounded-[3rem] border border-slate-100 shadow-sm overflow-hidden min-h-[400px]">
+        <div className="p-8 border-b border-slate-50 flex items-center justify-between bg-slate-50/30">
+          <h3 className="text-xl font-black text-slate-900">Enrolled Students</h3>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-slate-400 bg-white border border-slate-100 px-4 py-2 rounded-xl">
+              {filteredStudents.length} Students
+            </span>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto overflow-y-hidden">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-slate-50">
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Student</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Academic Info</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Performance</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Engagement</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-right">Progress</th>
+              </tr>
+            </thead>
+            <tbody>
+              <AnimatePresence mode="popLayout">
+                {filteredStudents.map((student, idx) => (
+                  <motion.tr
+                    key={student.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.05 }}
+                    className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-colors group"
+                  >
+                    <td className="px-8 py-6">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-white shadow-sm ring-1 ring-slate-100 group-hover:scale-110 transition-transform">
+                          <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${student.name}`} alt="" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-black text-slate-900">{student.name}</p>
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">{student.major}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <div className="space-y-1">
+                        <p className="text-sm font-black text-slate-700">GPA: {student.gpa}</p>
+                        <p className="text-[10px] font-bold text-slate-400 flex items-center gap-1.5 uppercase">
+                          <CheckCircle2 size={12} className="text-[#22C55E]" /> {student.assignments} Finished
+                        </p>
+                      </div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <div className="flex flex-col gap-1.5">
+                        <span className={`w-fit px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${student.status === 'Excellent' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' :
+                            student.status === 'Good' ? 'bg-blue-50 text-blue-600 border border-blue-100' :
+                              'bg-amber-50 text-amber-600 border border-amber-100'
+                          }`}>
+                          {student.status}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden w-20">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${student.performance}%` }}
+                              className={`h-full ${student.performance > 90 ? 'bg-emerald-500' : student.performance > 80 ? 'bg-blue-500' : 'bg-amber-500'}`}
+                            />
+                          </div>
+                          <span className="text-[10px] font-black text-slate-900 tabular-nums">{student.performance}%</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-[#E8F5E9] text-[#22C55E] rounded-xl">
+                          <TreePine size={16} />
+                        </div>
+                        <p className="text-xs font-black text-slate-700">{student.ecoPoints} <span className="text-slate-400 font-bold ml-0.5">pts</span></p>
+                      </div>
+                    </td>
+                    <td className="px-8 py-6 text-right">
+                      <button className="p-2.5 text-slate-400 hover:text-[#22C55E] hover:bg-[#E8F5E9] rounded-xl transition-all">
+                        <ChevronRight size={20} />
+                      </button>
+                    </td>
+                  </motion.tr>
+                ))}
+              </AnimatePresence>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function StatCard({ icon, title, value, suffix, badge, progress, delay, suffixColor = "text-slate-500" }: any) {
   return (
     <motion.div
