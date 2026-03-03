@@ -2882,7 +2882,7 @@ export default function StudentDashboard() {
       {/* AI Assistant Floating Button */}
       <button
         onClick={() => setIsAIChatOpen(true)}
-        className="fixed bottom-24 lg:bottom-8 right-6 lg:right-8 w-14 h-14 lg:w-16 lg:h-16 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-50 group pointer-events-auto"
+        className="fixed bottom-32 lg:bottom-8 right-6 lg:right-8 w-14 h-14 lg:w-16 lg:h-16 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50 group pointer-events-auto"
       >
         <Sparkles className="w-6 h-6 lg:w-8 lg:h-8 group-hover:rotate-12 transition-transform" />
         <div className={`absolute -top-12 right-0 ${t.card} ${t.text} px-4 py-2 rounded-xl text-xs font-bold shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border ${t.border} hidden lg:block`}>
@@ -4213,10 +4213,10 @@ export default function StudentDashboard() {
         whileHover={{ scale: 1.1, rotate: 5 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setShowAssistant(!showAssistant)}
-        className={`fixed bottom-8 right-8 w-16 h-16 rounded-[2rem] flex items-center justify-center z-[400] shadow-2xl transition-all ${showAssistant ? 'bg-red-500 text-white' : 'bg-[#22C55E] text-white'
+        className={`fixed bottom-32 lg:bottom-8 right-6 lg:right-8 w-14 h-14 lg:w-16 lg:h-16 rounded-[2rem] flex items-center justify-center z-[400] shadow-2xl transition-all ${showAssistant ? 'bg-red-500 text-white' : 'bg-[#22C55E] text-white'
           }`}
       >
-        {showAssistant ? <X size={28} /> : <Bot size={28} />}
+        {showAssistant ? <X size={24} className="lg:w-7 lg:h-7" /> : <Bot size={24} className="lg:w-7 lg:h-7" />}
       </motion.button>
 
       {/* AI Assistant Chat Modal */}
@@ -4312,7 +4312,7 @@ export default function StudentDashboard() {
           { id: 'courses', icon: <BookOpen size={18} />, label: 'Study' },
           { id: 'notes', icon: <FileText size={18} />, label: 'Notes' },
           { id: 'assignment-submission', icon: <Upload size={18} />, label: 'Submit' },
-          { id: 'papers', icon: <FileQuestion size={18} />, label: 'Papers' },
+          { id: 'papers', icon: <GraduationCap size={18} />, label: 'Papers' },
           { id: 'eco-tracker', icon: <TreePine size={18} />, label: 'Eco' }
         ].map((item) => (
           <button
