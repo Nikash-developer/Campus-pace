@@ -7,11 +7,65 @@ import {
   CheckCircle2, Clock, AlertCircle, ArrowLeft, ArrowRight,
   Edit3, MessageSquare, Scissors, Type, Maximize2,
   MoreVertical, Filter, SortDesc, Folder, ClipboardList, Droplets, User, X, Sparkles, Loader2,
-  ChevronLeft, Shield, Camera
+  ChevronLeft, Shield, Camera, Sun, Moon, HelpCircle
 } from 'lucide-react';
 import CountUp from 'react-countup';
 import { useAuth } from '../AuthContext';
 import FacultyNotices from './FacultyNotices';
+
+const themes = {
+  Light: {
+    bg: 'bg-[#F8FAF9]',
+    header: 'bg-white border-slate-100',
+    text: 'text-slate-900',
+    heading: 'text-slate-800',
+    card: 'bg-white border-slate-100',
+    navActive: 'text-[#22C55E] bg-[#22C55E]/5',
+    navInactive: 'text-slate-500 hover:bg-slate-50',
+    search: 'bg-[#F1F3F5]',
+    input: 'bg-slate-50 border-slate-100',
+    muted: 'text-slate-400',
+    border: 'border-slate-100',
+    accent: 'text-[#22C55E]',
+    accentBg: 'bg-[#22C55E]/5',
+    sidebar: 'bg-white',
+    sidebarHover: 'hover:bg-slate-50'
+  },
+  Dark: {
+    bg: 'bg-[#0f172a]',
+    header: 'bg-[#1e293b] border-slate-800',
+    text: 'text-slate-100',
+    heading: 'text-white',
+    card: 'bg-[#1e293b] border-slate-800',
+    navActive: 'text-[#22C55E] bg-[#22C55E]/10',
+    navInactive: 'text-slate-400 hover:bg-slate-800',
+    search: 'bg-[#334155]',
+    input: 'bg-[#1e292a] border-slate-700',
+    muted: 'text-slate-500',
+    border: 'border-slate-800',
+    accent: 'text-[#22C55E]',
+    accentBg: 'bg-[#22C55E]/10',
+    sidebar: 'bg-[#1e293b]',
+    sidebarHover: 'hover:bg-slate-800'
+  },
+  Eco: {
+    bg: 'bg-[#f0f4f0]',
+    header: 'bg-[#f8faf8] border-[#dce6dc]',
+    text: 'text-[#2d4d2d]',
+    heading: 'text-[#1e3a1e]',
+    card: 'bg-[#fbfcff] border-[#dce6dc]',
+    navActive: 'text-[#2e7d32] bg-[#2e7d32]/10',
+    navInactive: 'text-[#5d7d5d] hover:bg-[#e8f0e8]',
+    search: 'bg-[#e8f0e8]',
+    input: 'bg-[#f8faf8] border-[#dce6dc]',
+    muted: 'text-[#8ca68c]',
+    border: 'border-[#dce6dc]',
+    accent: 'text-[#2e7d32]',
+    accentBg: 'bg-[#2e7d32]/10',
+    sidebar: 'bg-[#f8faf8]',
+    sidebarHover: 'hover:bg-[#e8f0e8]'
+  }
+};
 
 export default function FacultyDashboard() {
   const { user, logout } = useAuth();
@@ -26,6 +80,34 @@ export default function FacultyDashboard() {
   const [newAssignmentCourse, setNewAssignmentCourse] = useState("Env Science 101");
   const [assignmentFiles, setAssignmentFiles] = useState<File[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const [themeMode, setThemeMode] = useState<'Light' | 'Dark' | 'Eco'>('Light');
+  const [facultyProfile, setFacultyProfile] = useState({
+    name: user?.name || 'Dr. Sarah Jenkins',
+    email: user?.email || 'sarah.j@university.edu',
+    role: user?.role || 'Senior Faculty',
+    dept: 'Environmental Sciences',
+    avatar: user?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=prof`
+  });
+
+  const [notificationSettings, setNotificationSettings] = useState({
+    assignmentAlerts: true,
+    ecoMilestones: true,
+    paperUploads: false,
+    securityAlerts: true,
+    emailBriefing: true
+  });
+
+  useEffect(() => {
+    if (themeMode === 'Eco' || themeMode === 'Dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [themeMode]);
+
+  const t = themes[themeMode];
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
 
@@ -128,10 +210,10 @@ export default function FacultyDashboard() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-[#F8FAF9] flex flex-col font-sans"
+      className={`min-h-screen ${t.bg} flex flex-col font-sans transition-colors duration-500`}
     >
       {/* Top Navbar */}
-      <header className="bg-white border-b border-[#E5E7EB] flex items-center justify-between px-4 lg:px-8 py-3 lg:py-4 sticky top-0 z-40">
+      <header className={`${t.header} border-b flex items-center justify-between px-4 lg:px-8 py-3 lg:py-4 sticky top-0 z-40 transition-all duration-500`}>
         <div className="flex items-center gap-4 lg:gap-12 flex-1 max-w-4xl">
           {/* Mobile Menu Toggle */}
           <button
@@ -146,44 +228,51 @@ export default function FacultyDashboard() {
           </button>
 
           <div className="flex items-center gap-2 lg:gap-3 shrink-0 group cursor-pointer" onClick={() => setActiveNav('Notices')}>
-            <div className="p-1.5 lg:p-2 bg-[#E8F5E9] rounded-xl lg:rounded-2xl text-[#22C55E] shadow-sm transform group-hover:rotate-12 transition-transform">
+            <div className={`p-1.5 lg:p-2 ${t.accentBg} rounded-xl lg:rounded-2xl ${t.accent} shadow-sm transform group-hover:rotate-12 transition-transform`}>
               <Leaf size={24} fill="currentColor" className="lg:w-7 lg:h-7" />
             </div>
-            <span className="text-lg lg:text-2xl font-black tracking-tight text-slate-900 italic">Green-Sync</span>
+            <span className={`text-lg lg:text-2xl font-black tracking-tight ${t.text} italic`}>Green-Sync</span>
           </div>
           <div className="relative flex-1 max-w-md hidden lg:block">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+            <Search className={`absolute left-4 top-1/2 -translate-y-1/2 ${t.muted}`} size={18} />
             <input
               type="text"
               placeholder="Search..."
               onKeyDown={(e) => e.key === 'Enter' && handleShowToast(`Searching for "${(e.target as HTMLInputElement).value}"...`)}
-              className="w-full bg-[#F8FAF9] border-none rounded-2xl py-2.5 pl-11 pr-4 text-sm font-bold focus:ring-2 focus:ring-[#DCFCE7] transition-all"
+              className={`w-full ${t.search} border-none rounded-2xl py-2.5 pl-11 pr-4 text-sm font-bold focus:ring-2 focus:ring-[#DCFCE7] transition-all ${t.text}`}
             />
           </div>
         </div>
         <nav className="hidden lg:flex items-center gap-8 relative mr-8">
-          {['Notices', 'Assignments', 'Students', 'Settings'].map(nav => (
+          {['Assignments', 'Notices', 'Students', 'Settings'].map(nav => (
             <button
               key={nav}
               onClick={() => setActiveNav(nav)}
-              className={`text-sm font-bold transition-colors relative py-1 ${activeNav === nav ? 'text-[#22C55E]' : 'text-slate-500 hover:text-slate-900'}`}
+              className={`text-sm font-bold transition-colors relative py-1 ${activeNav === nav ? t.accent : t.muted + ' hover:' + t.text}`}
             >
               {nav === 'Students' ? 'Student List' : nav}
               {activeNav === nav && (
-                <motion.div layoutId="navUnderline" className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#22C55E] rounded-full" />
+                <motion.div layoutId="navUnderline" className={`absolute -bottom-1 left-0 right-0 h-0.5 ${t.accent.replace('text-', 'bg-')} rounded-full`} />
               )}
             </button>
           ))}
         </nav>
         <div className="flex items-center gap-3 lg:gap-4">
-          <button onClick={() => setShowLogoutModal(true)} className="flex items-center gap-2 px-3 lg:px-4 py-2 bg-[#F8FAF9] text-slate-600 border border-[#E5E7EB] text-xs lg:text-sm font-bold rounded-xl hover:bg-[#DCFCE7] hover:text-[#22C55E] hover:border-[#DCFCE7] transition-all duration-300">
+          <button onClick={() => setShowLogoutModal(true)} className={`flex items-center gap-2 px-3 lg:px-4 py-2 ${t.bg} ${t.text} border ${t.border} text-xs lg:text-sm font-bold rounded-xl hover:bg-emerald-500/10 hover:text-emerald-500 transition-all duration-300`}>
             <LogOut size={16} /> <span className="hidden sm:inline">Log Out</span>
           </button>
           <div className="relative">
-            <div
-              onClick={() => setShowProfileMenu(!showProfileMenu)}
-              className="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border-2 border-white shadow-sm cursor-pointer hover:scale-105 transition-transform flex items-center justify-center relative z-50">
-              <img src={user?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || "prof"}`} alt="Avatar" />
+            <div className="flex items-center gap-2 pr-2">
+              <div
+                onClick={() => setShowProfileMenu(!showProfileMenu)}
+                className={`w-10 h-10 lg:w-11 lg:h-11 rounded-2xl overflow-hidden border-2 ${t.border} shadow-sm cursor-pointer hover:scale-105 transition-transform relative z-50`}>
+                <img src={facultyProfile.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                <div className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 ${t.card.replace('bg-', 'border-')}`} />
+              </div>
+              <div className="hidden sm:block text-left cursor-pointer" onClick={() => setShowProfileMenu(!showProfileMenu)}>
+                <p className={`text-[11px] font-black ${t.heading} leading-none`}>{facultyProfile.name}</p>
+                <p className={`text-[9px] font-bold ${t.muted} uppercase tracking-wider mt-0.5`}>{facultyProfile.role}</p>
+              </div>
             </div>
             <AnimatePresence>
               {showProfileMenu && (
@@ -193,17 +282,17 @@ export default function FacultyDashboard() {
                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 z-50 overflow-hidden"
+                    className={`absolute right-0 mt-3 w-56 ${t.card} rounded-2xl shadow-xl border ${t.border} z-50 overflow-hidden`}
                   >
-                    <div className="p-4 border-b border-slate-50 bg-slate-50/50">
-                      <p className="font-bold text-slate-900">{user?.name || "Professor"}</p>
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{user?.role || "Faculty"}</p>
+                    <div className={`p-4 border-b ${t.border} ${t.search}`}>
+                      <p className={`font-bold ${t.heading}`}>{facultyProfile.name}</p>
+                      <p className={`text-[10px] font-bold ${t.muted} uppercase tracking-widest`}>{facultyProfile.role}</p>
                     </div>
                     <div className="p-2 space-y-1">
-                      <button onClick={() => { setShowProfileMenu(false); setActiveNav('Settings'); setSettingsSubTab('profile'); }} className="w-full flex items-center gap-2 px-3 py-2.5 hover:bg-slate-50 rounded-xl transition-colors text-sm font-bold text-slate-700">
+                      <button onClick={() => { setShowProfileMenu(false); setActiveNav('Settings'); setSettingsSubTab('profile'); }} className={`w-full flex items-center gap-2 px-3 py-2.5 ${t.sidebarHover} rounded-xl transition-colors text-sm font-bold ${t.text}`}>
                         <User size={16} /> Edit Profile
                       </button>
-                      <button onClick={() => { setShowProfileMenu(false); setActiveNav('Settings'); setSettingsSubTab('main'); }} className="w-full flex items-center gap-2 px-3 py-2.5 hover:bg-slate-50 rounded-xl transition-colors text-sm font-bold text-slate-700">
+                      <button onClick={() => { setShowProfileMenu(false); setActiveNav('Settings'); setSettingsSubTab('main'); }} className={`w-full flex items-center gap-2 px-3 py-2.5 ${t.sidebarHover} rounded-xl transition-colors text-sm font-bold ${t.text}`}>
                         <Settings size={16} /> Settings
                       </button>
                     </div>
@@ -231,18 +320,18 @@ export default function FacultyDashboard() {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 left-0 bottom-0 w-[280px] bg-white z-[101] lg:hidden shadow-2xl p-6 flex flex-col gap-8 overflow-y-auto styled-scrollbar"
+              className={`fixed top-0 left-0 bottom-0 w-[280px] ${t.sidebar} z-[101] lg:hidden shadow-2xl p-6 flex flex-col gap-8 overflow-y-auto styled-scrollbar border-r ${t.border}`}
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="bg-[#E8F5E9] p-2 rounded-xl text-[#22C55E]">
+                  <div className={`p-2 ${t.accentBg} rounded-xl ${t.accent}`}>
                     <Leaf size={24} fill="currentColor" />
                   </div>
-                  <span className="text-xl font-black italic text-slate-900">Green-Sync</span>
+                  <span className={`text-xl font-black italic ${t.heading}`}>Green-Sync</span>
                 </div>
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 text-slate-400"
+                  className={`p-2 ${t.muted}`}
                 >
                   <X size={24} />
                 </button>
@@ -250,8 +339,8 @@ export default function FacultyDashboard() {
 
               <div className="flex flex-col gap-2">
                 {[
-                  { id: 'Notices', label: 'Notices', icon: <Bell size={20} /> },
                   { id: 'Assignments', label: 'Assignments', icon: <ClipboardList size={20} /> },
+                  { id: 'Notices', label: 'Notices', icon: <Bell size={20} /> },
                   { id: 'Students', label: 'Student List', icon: <Users size={20} /> },
                   { id: 'Settings', label: 'Settings', icon: <Settings size={20} /> }
                 ].map((item) => (
@@ -262,8 +351,8 @@ export default function FacultyDashboard() {
                       setIsMobileMenuOpen(false);
                     }}
                     className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold transition-all ${activeNav === item.id
-                      ? 'bg-[#22C55E] text-white shadow-lg shadow-[#22C55E]/20'
-                      : 'text-slate-500 hover:bg-slate-50'}`}
+                      ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
+                      : `${t.muted} ${t.sidebarHover}`}`}
                   >
                     {item.icon}
                     {item.label}
@@ -271,11 +360,11 @@ export default function FacultyDashboard() {
                 ))}
               </div>
 
-              <div className="mt-auto p-6 bg-[#F0FDF4] rounded-3xl border border-[#DCFCE7]">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Paper Saved</p>
+              <div className={`mt-auto p-6 ${t.accentBg} rounded-3xl border ${t.border.replace('border-', 'border-emerald-500/10')}`}>
+                <p className={`text-[10px] font-black ${t.muted} uppercase tracking-widest mb-2`}>Paper Saved</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-2xl font-black text-[#166534]">{stats.pages}</span>
-                  <FileText className="text-[#22C55E]" size={20} />
+                  <span className={`text-2xl font-black ${t.accent}`}>{stats.pages}</span>
+                  <FileText className={t.accent} size={20} />
                 </div>
               </div>
             </motion.div>
@@ -302,29 +391,29 @@ export default function FacultyDashboard() {
                 transition={{ duration: 0.4 }}
                 className="flex flex-col gap-4"
               >
-                <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
-                  <span className="cursor-pointer hover:text-slate-600 transition-colors">Courses</span>
+                <div className={`flex items-center gap-2 text-xs font-bold ${t.muted}`}>
+                  <span className={`cursor-pointer hover:${t.text} transition-colors`}>Courses</span>
                   <ChevronRight size={12} />
-                  <span className="cursor-pointer hover:text-slate-600 transition-colors">Env Science 101</span>
+                  <span className={`cursor-pointer hover:${t.text} transition-colors`}>Env Science 101</span>
                   <ChevronRight size={12} />
-                  <span className="text-slate-900 line-clamp-1">ASG 3: Urban Sustainability</span>
+                  <span className={`${t.heading} line-clamp-1`}>ASG 3: Urban Sustainability</span>
                 </div>
 
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                   <div className="max-w-3xl">
-                    <h1 className="text-2xl lg:text-4xl font-black text-slate-900 mb-1 lg:mb-2 tracking-tight">Assignment Management</h1>
-                    <p className="text-sm lg:text-base text-slate-500 font-medium leading-relaxed">Manage submissions, grade papers, and track the environmental impact of digital submissions for "Introduction to Environmental Science".</p>
+                    <h1 className={`text-2xl lg:text-4xl font-black ${t.heading} mb-1 lg:mb-2 tracking-tight`}>Assignment Management</h1>
+                    <p className={`text-sm lg:text-base ${t.muted} font-medium leading-relaxed`}>Manage submissions, grade papers, and track the environmental impact of digital submissions for "Introduction to Environmental Science".</p>
                   </div>
                   <div className="flex items-center gap-2 sm:gap-3 shrink-0 mt-2 md:mt-0">
                     <button
                       onClick={handleExport}
-                      className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 lg:px-6 py-2.5 lg:py-3 bg-white border border-[#E5E7EB] text-slate-700 text-xs lg:text-sm font-bold rounded-2xl hover:bg-slate-50 transition-all shadow-sm group">
+                      className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 lg:px-6 py-2.5 lg:py-3 ${t.card} border ${t.border} ${t.text} text-xs lg:text-sm font-bold rounded-2xl ${t.sidebarHover} transition-all shadow-sm group`}>
                       <Download size={16} className="lg:w-[18px] lg:h-[18px] group-hover:-translate-y-0.5 transition-transform" /> <span className="hidden sm:inline">Export Report</span>
                       <span className="sm:hidden">Export</span>
                     </button>
                     <button
                       onClick={() => setShowNewAssignmentModal(true)}
-                      className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 lg:px-6 py-2.5 lg:py-3 bg-[#22C55E] hover:bg-[#16a34a] text-white text-xs lg:text-sm font-black rounded-2xl transition-all shadow-lg shadow-[#22C55E]/20 group">
+                      className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 lg:px-6 py-2.5 lg:py-3 bg-emerald-500 hover:bg-emerald-600 text-white text-xs lg:text-sm font-black rounded-2xl transition-all shadow-lg shadow-emerald-500/20 group">
                       <Plus size={16} className="lg:w-[18px] lg:h-[18px] group-hover:rotate-90 transition-transform" /> <span className="hidden sm:inline">New Assignment</span>
                       <span className="sm:hidden">Create</span>
                     </button>
@@ -334,10 +423,10 @@ export default function FacultyDashboard() {
 
               {/* Stats Row */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
-                <StatCard icon={<FileText className="text-blue-500" />} title="Total Submissions" value={stats.total} suffix="Target: 50" progress={90} delay={0.1} />
-                <StatCard icon={<Clock className="text-amber-500" />} title="Pending Grading" value={stats.pending} badge="Urgent" delay={0.2} suffixColor="text-amber-600" />
-                <StatCard icon={<TreePine className="text-[#22C55E]" />} title="Paper Saved" value={stats.pages} suffix="sheets" progress={75} delay={0.3} />
-                <StatCard icon={<Droplets className="text-cyan-500" />} title="Water Saved" value={stats.water} suffix="liters" progress={60} delay={0.4} />
+                <StatCard icon={<FileText className="text-blue-500" />} title="Total Submissions" value={stats.total} suffix="Target: 50" progress={90} delay={0.1} theme={t} />
+                <StatCard icon={<Clock className="text-amber-500" />} title="Pending Grading" value={stats.pending} badge="Urgent" delay={0.2} suffixColor="text-amber-600" theme={t} />
+                <StatCard icon={<TreePine className="text-emerald-500" />} title="Paper Saved" value={stats.pages} suffix="sheets" progress={75} delay={0.3} theme={t} />
+                <StatCard icon={<Droplets className="text-cyan-500" />} title="Water Saved" value={stats.water} suffix="liters" progress={60} delay={0.4} theme={t} />
               </div>
 
               <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
@@ -346,19 +435,19 @@ export default function FacultyDashboard() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, delay: 0.3 }}
-                  className="xl:col-span-3 bg-white rounded-[2rem] lg:rounded-[2.5rem] border border-[#E5E7EB] flex flex-col shadow-sm overflow-hidden h-[400px] lg:h-[calc(100vh-420px)] lg:min-h-[500px]"
+                  className={`xl:col-span-3 ${t.card} rounded-[2rem] lg:rounded-[2.5rem] border ${t.border} flex flex-col shadow-sm overflow-hidden h-[400px] lg:h-[calc(100vh-420px)] lg:min-h-[500px]`}
                 >
-                  <div className="p-6 border-b border-slate-100 bg-white z-10 sticky top-0">
+                  <div className={`p-6 border-b ${t.border} ${t.card} z-10 sticky top-0`}>
                     <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-lg font-black text-slate-900">Submissions</h2>
+                      <h2 className={`text-lg font-black ${t.heading}`}>Submissions</h2>
                       <div className="flex items-center gap-1.5">
-                        <button onClick={() => handleShowToast("Filter options coming soon")} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-xl transition-colors"><Filter size={16} /></button>
-                        <button onClick={() => handleShowToast("Sorting options coming soon")} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-xl transition-colors"><SortDesc size={16} /></button>
+                        <button onClick={() => handleShowToast("Filter options coming soon")} className={`p-2 ${t.muted} hover:${t.text} ${t.sidebarHover} rounded-xl transition-colors`}><Filter size={16} /></button>
+                        <button onClick={() => handleShowToast("Sorting options coming soon")} className={`p-2 ${t.muted} hover:${t.text} ${t.sidebarHover} rounded-xl transition-colors`}><SortDesc size={16} /></button>
                       </div>
                     </div>
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                      <input type="text" placeholder="Search student..." className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-2xl text-sm font-medium focus:ring-2 focus:ring-[#DCFCE7] transition-all" />
+                      <Search className={`absolute left-3 top-1/2 -translate-y-1/2 ${t.muted}`} size={16} />
+                      <input type="text" placeholder="Search student..." className={`w-full pl-10 pr-4 py-2.5 ${t.search} border-none rounded-2xl text-sm font-medium focus:ring-2 focus:ring-emerald-500/20 transition-all ${t.text}`} />
                     </div>
                   </div>
 
@@ -503,10 +592,10 @@ export default function FacultyDashboard() {
                     </div>
 
                     <div className="space-y-8">
-                      <InteractiveRubricSlider label="Research Quality" val={rubric.research} max={30} onChange={(v) => setRubric({ ...rubric, research: v })} />
-                      <InteractiveRubricSlider label="Clarity & Logic" val={rubric.clarity} max={30} onChange={(v) => setRubric({ ...rubric, clarity: v })} />
-                      <InteractiveRubricSlider label="Grammar & Style" val={rubric.grammar} max={20} onChange={(v) => setRubric({ ...rubric, grammar: v })} />
-                      <InteractiveRubricSlider label="Topic Relevance" val={rubric.relevance} max={20} onChange={(v) => setRubric({ ...rubric, relevance: v })} />
+                      <InteractiveRubricSlider label="Research Quality" val={rubric.research} max={30} onChange={(v) => setRubric({ ...rubric, research: v })} theme={t} />
+                      <InteractiveRubricSlider label="Clarity & Logic" val={rubric.clarity} max={30} onChange={(v) => setRubric({ ...rubric, clarity: v })} theme={t} />
+                      <InteractiveRubricSlider label="Grammar & Style" val={rubric.grammar} max={20} onChange={(v) => setRubric({ ...rubric, grammar: v })} theme={t} />
+                      <InteractiveRubricSlider label="Topic Relevance" val={rubric.relevance} max={20} onChange={(v) => setRubric({ ...rubric, relevance: v })} theme={t} />
                     </div>
 
                     <div className="mt-10 pt-8 border-t border-slate-100 relative">
@@ -590,7 +679,7 @@ export default function FacultyDashboard() {
               transition={{ duration: 0.3 }}
               className="flex-1 h-full"
             >
-              <StudentListView stats={stats} />
+              <StudentListView stats={stats} theme={t} themeMode={themeMode} />
             </motion.div>
           ) : activeNav === 'Notices' ? (
             <motion.div
@@ -626,7 +715,7 @@ export default function FacultyDashboard() {
                 </h1>
               </div>
 
-              <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+              <div className={`${t.card} rounded-[2.5rem] border ${t.border} shadow-sm overflow-hidden`}>
                 <AnimatePresence mode="wait">
                   {settingsSubTab === 'main' && (
                     <motion.div
@@ -644,18 +733,18 @@ export default function FacultyDashboard() {
                         <button
                           key={opt.id}
                           onClick={() => setSettingsSubTab(opt.id as any)}
-                          className="w-full p-6 flex items-center justify-between hover:bg-slate-50 transition-all border-b border-slate-50 last:border-0 group"
+                          className={`w-full p-6 flex items-center justify-between ${t.sidebarHover} transition-all border-b ${t.border} last:border-0 group`}
                         >
                           <div className="flex items-center gap-6">
-                            <div className="p-4 bg-[#F8F9FA] text-slate-400 group-hover:bg-[#DCFCE7] group-hover:text-[#22C55E] rounded-2xl transition-all">
+                            <div className={`p-4 ${t.search} ${t.muted} group-hover:bg-emerald-500/10 group-hover:${t.accent} rounded-2xl transition-all`}>
                               {opt.icon}
                             </div>
                             <div className="text-left">
-                              <p className="text-base font-black text-slate-900">{opt.label}</p>
-                              <p className="text-xs font-bold text-slate-400 mt-0.5">{opt.desc}</p>
+                              <p className={`text-base font-black ${t.heading}`}>{opt.label}</p>
+                              <p className={`text-xs font-bold ${t.muted} mt-0.5`}>{opt.desc}</p>
                             </div>
                           </div>
-                          <ChevronRight size={20} className="text-slate-300 group-hover:text-[#22C55E] group-hover:translate-x-1 transition-all" />
+                          <ChevronRight size={20} className={`${t.muted} group-hover:${t.accent} group-hover:translate-x-1 transition-all`} />
                         </button>
                       ))}
                     </motion.div>
@@ -670,31 +759,133 @@ export default function FacultyDashboard() {
                     >
                       <div className="flex flex-col sm:flex-row items-center gap-8 mb-4">
                         <div className="relative group">
-                          <div className="w-24 h-24 rounded-[2.5rem] bg-slate-100 border-4 border-white shadow-xl overflow-hidden">
-                            <img src={user?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=prof`} alt="Avatar" />
+                          <div className={`w-24 h-24 rounded-[2.5rem] ${t.search} border-4 ${t.card.replace('bg-', 'border-')} shadow-xl overflow-hidden`}>
+                            <img src={facultyProfile.avatar} alt="Avatar" className="w-full h-full object-cover" />
                           </div>
-                          <button className="absolute -bottom-1 -right-1 p-2.5 bg-[#22C55E] text-white rounded-xl shadow-lg hover:scale-110 transition-transform">
-                            <User size={14} />
-                          </button>
+                          <div className={`absolute -bottom-1 -right-1 p-2.5 bg-emerald-500 text-white rounded-xl shadow-lg`}>
+                            <Camera size={18} />
+                          </div>
                         </div>
                         <div className="text-center sm:text-left">
-                          <h3 className="text-2xl font-black text-slate-900">{user?.name || "Professor Sarah"}</h3>
-                          <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest mt-1">{user?.role || "Senior Faculty"}</p>
+                          <h3 className={`text-2xl font-black ${t.heading}`}>{facultyProfile.name}</h3>
+                          <p className={`${t.muted} font-bold uppercase text-[10px] tracking-widest mt-1`}>{facultyProfile.role}</p>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Display Name</label>
-                          <input type="text" defaultValue={user?.name || "Dr. Sarah Jenkins"} className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-[#DCFCE7] font-bold text-slate-900 transition-all" />
+                          <label className={`text-[10px] font-black ${t.muted} uppercase tracking-widest ml-1`}>Display Name</label>
+                          <input type="text" value={facultyProfile.name} onChange={(e) => setFacultyProfile(prev => ({ ...prev, name: e.target.value }))} className={`w-full p-4 ${t.search} border-none rounded-2xl focus:ring-4 focus:ring-emerald-500/10 font-bold ${t.text} transition-all`} />
                         </div>
                         <div className="space-y-2">
-                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Contact Email</label>
-                          <input type="email" defaultValue="sarah.j@university.edu" className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-[#DCFCE7] font-bold text-slate-900 transition-all" />
+                          <label className={`text-[10px] font-black ${t.muted} uppercase tracking-widest ml-1`}>Contact Email</label>
+                          <input type="email" value={facultyProfile.email} onChange={(e) => setFacultyProfile(prev => ({ ...prev, email: e.target.value }))} className={`w-full p-4 ${t.search} border-none rounded-2xl focus:ring-4 focus:ring-emerald-500/10 font-bold ${t.text} transition-all`} />
                         </div>
                       </div>
 
-                      <button onClick={() => handleShowToast("Profile Updated Successfully")} className="w-full py-4 bg-[#22C55E] text-white rounded-2xl font-black shadow-lg shadow-[#22C55E]/20 hover:scale-[1.02] transition-all">Save Profile Changes</button>
+                      <button onClick={() => handleShowToast("Profile Updated Successfully")} className="w-full py-4 bg-emerald-500 text-white rounded-2xl font-black shadow-lg shadow-emerald-500/20 hover:scale-[1.02] active:scale-95 transition-all">Save Profile Changes</button>
+                    </motion.div>
+                  )}
+
+                  {settingsSubTab === 'notifications' && (
+                    <motion.div
+                      key="settings-notifications"
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="p-8 space-y-4"
+                    >
+                      {[
+                        { id: 'assignmentAlerts', label: 'Assignment Alerts', desc: 'Get notified when new submissions arrive' },
+                        { id: 'ecoMilestones', label: 'Eco Milestones', desc: 'Alert me about sustainability goals' },
+                        { id: 'securityAlerts', label: 'Security Alerts', desc: 'Immediate notification of login from new devices' },
+                        { id: 'emailBriefing', label: 'Email Briefing', desc: 'Receive weekly summary of class progress' }
+                      ].map((pref) => (
+                        <div key={pref.id} className={`flex items-center justify-between p-5 ${t.search} rounded-2xl border ${t.border}`}>
+                          <div>
+                            <p className={`font-black ${t.heading} leading-tight`}>{pref.label}</p>
+                            <p className={`text-xs ${t.muted} font-medium mt-0.5`}>{pref.desc}</p>
+                          </div>
+                          <button
+                            onClick={() => setNotificationSettings(prev => ({ ...prev, [pref.id]: !prev[pref.id as keyof typeof prev] }))}
+                            className={`w-12 h-6.5 rounded-full transition-colors relative p-1 ${notificationSettings[pref.id as keyof typeof notificationSettings] ? 'bg-emerald-500' : 'bg-slate-300'}`}
+                          >
+                            <motion.div
+                              animate={{ x: notificationSettings[pref.id as keyof typeof notificationSettings] ? 22 : 0 }}
+                              className="w-4.5 h-4.5 bg-white rounded-full shadow-md"
+                            />
+                          </button>
+                        </div>
+                      ))}
+                    </motion.div>
+                  )}
+
+                  {settingsSubTab === 'security' && (
+                    <motion.div
+                      key="settings-security"
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="p-8 space-y-6"
+                    >
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <label className={`text-[10px] font-black ${t.muted} uppercase tracking-widest ml-1`}>Current Password</label>
+                          <input type="password" placeholder="••••••••" className={`w-full p-4 ${t.search} border-none rounded-2xl focus:ring-4 focus:ring-emerald-500/10 font-bold ${t.text} transition-all`} />
+                        </div>
+                        <div className="space-y-2">
+                          <label className={`text-[10px] font-black ${t.muted} uppercase tracking-widest ml-1`}>New Password</label>
+                          <input type="password" placeholder="Min 8 characters" className={`w-full p-4 ${t.search} border-none rounded-2xl focus:ring-4 focus:ring-emerald-500/10 font-bold ${t.text} transition-all`} />
+                        </div>
+                        <div className="space-y-2">
+                          <label className={`text-[10px] font-black ${t.muted} uppercase tracking-widest ml-1`}>Confirm Password</label>
+                          <input type="password" placeholder="Min 8 characters" className={`w-full p-4 ${t.search} border-none rounded-2xl focus:ring-4 focus:ring-emerald-500/10 font-bold ${t.text} transition-all`} />
+                        </div>
+                      </div>
+                      <button onClick={() => handleShowToast("Password Updated")} className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/10 active:scale-95">Update Security Credentials</button>
+                    </motion.div>
+                  )}
+
+                  {settingsSubTab === 'appearance' && (
+                    <motion.div
+                      key="settings-appearance"
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="p-8 space-y-8"
+                    >
+                      <div>
+                        <h4 className={`text-sm font-black ${t.heading} uppercase tracking-widest mb-6`}>Dashboard Theme</h4>
+                        <div className="grid grid-cols-3 gap-4">
+                          {['Light', 'Dark', 'Eco'].map((mode) => (
+                            <button
+                              key={mode}
+                              onClick={() => setThemeMode(mode as any)}
+                              className={`p-5 rounded-2xl border-2 transition-all flex flex-col items-center gap-4 ${themeMode === mode
+                                ? 'bg-emerald-500/5 border-emerald-500'
+                                : `${t.card} ${t.border} hover:border-emerald-500/20`
+                                }`}
+                            >
+                              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${mode === 'Light' ? 'bg-orange-100 text-orange-500' :
+                                mode === 'Dark' ? 'bg-slate-800 text-white shadow-xl shadow-black/20' :
+                                  'bg-emerald-100 text-emerald-500'
+                                }`}>
+                                {mode === 'Light' ? <Sun size={28} /> : mode === 'Dark' ? <Moon size={28} /> : <Leaf size={28} />}
+                              </div>
+                              <span className={`text-xs font-black ${t.text}`}>{mode}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className={`p-6 ${t.search} rounded-[2rem] border ${t.border} flex items-center justify-between`}>
+                        <div className="flex items-center gap-4">
+                          <div className={`p-3 ${t.card} rounded-xl shadow-sm text-emerald-500`}>
+                            <HelpCircle size={24} />
+                          </div>
+                          <div>
+                            <p className={`font-black ${t.heading}`}>Theme Persistence</p>
+                            <p className={`text-xs ${t.muted} font-medium`}>Your theme choice is cloud-synced automatically</p>
+                          </div>
+                        </div>
+                      </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -881,7 +1072,7 @@ export default function FacultyDashboard() {
 }
 
 // Student ListView Component
-function StudentListView({ stats }: { stats: any }) {
+function StudentListView({ stats, theme: t, themeMode }: { stats: any, theme: any, themeMode: string }) {
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
@@ -969,35 +1160,35 @@ function StudentListView({ stats }: { stats: any }) {
   const months = ['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
 
   return (
-    <div className="flex-1 max-w-[1600px] w-full mx-auto p-4 lg:p-8 flex flex-col gap-8 pb-12 overflow-y-auto h-full styled-scrollbar">
+    <div className={`flex-1 max-w-[1600px] w-full mx-auto p-4 lg:p-8 flex flex-col gap-8 pb-12 overflow-y-auto h-full styled-scrollbar ${t.bg}`}>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl lg:text-5xl font-black text-slate-900 leading-tight">Student Performance Analytics</h1>
-          <p className="text-slate-500 font-medium mt-2">Comprehensive overview of academic excellence and environmental engagement.</p>
+          <h1 className={`text-3xl lg:text-5xl font-black ${t.heading} leading-tight`}>Student Performance Analytics</h1>
+          <p className={`${t.muted} font-medium mt-2`}>Comprehensive overview of academic excellence and environmental engagement.</p>
         </div>
         <div className="relative w-full md:w-80">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+          <Search className={`absolute left-4 top-1/2 -translate-y-1/2 ${t.muted}`} size={18} />
           <input
             type="text"
             placeholder="Search students..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-12 pr-4 text-sm font-bold focus:ring-4 focus:ring-[#DCFCE7] transition-all"
+            className={`w-full ${t.card} border ${t.border} rounded-2xl py-3 pl-12 pr-4 text-sm font-bold focus:ring-4 focus:ring-emerald-500/10 transition-all ${t.text}`}
           />
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Class Performance Graph */}
-        <div className="lg:col-span-2 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm p-4 lg:p-8 flex flex-col min-h-[400px]">
+        <div className={`lg:col-span-2 ${t.card} rounded-[2.5rem] border ${t.border} shadow-sm p-4 lg:p-8 flex flex-col min-h-[400px]`}>
           <div className="flex items-center justify-between mb-8 lg:mb-10">
             <div>
-              <h3 className="text-lg lg:text-xl font-black text-slate-900">Class Performance Trend</h3>
-              <p className="text-[10px] lg:text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Average grades % over time</p>
+              <h3 className={`text-lg lg:text-xl font-black ${t.heading}`}>Class Performance Trend</h3>
+              <p className={`text-[10px] lg:text-xs font-bold ${t.muted} uppercase tracking-widest mt-1`}>Average grades % over time</p>
             </div>
             <div className="flex gap-2">
-              <span className="flex items-center gap-2 text-[10px] font-black text-slate-400 px-3 py-1 bg-slate-50 rounded-full border border-slate-100">
-                <div className="w-2 h-2 rounded-full bg-[#22C55E]" /> Avg Score
+              <span className={`flex items-center gap-2 text-[10px] font-black ${t.muted} px-3 py-1 ${t.search} rounded-full border ${t.border}`}>
+                <div className="w-2 h-2 rounded-full bg-emerald-500" /> Avg Score
               </span>
             </div>
           </div>
@@ -1006,8 +1197,8 @@ function StudentListView({ stats }: { stats: any }) {
             {/* Grid lines */}
             <div className="absolute inset-0 flex flex-col justify-between pointer-events-none pb-10 pt-12">
               {[0, 25, 50, 75, 100].map(val => (
-                <div key={val} className="w-full border-t border-slate-50 flex items-center relative">
-                  <span className="absolute -left-0 lg:-left-10 text-[8px] lg:text-[9px] font-bold text-slate-200">{val}%</span>
+                <div key={val} className={`w-full border-t ${t.border} flex items-center relative opacity-50`}>
+                  <span className={`absolute -left-0 lg:-left-10 text-[8px] lg:text-[9px] font-bold ${t.muted}`}>{val}%</span>
                 </div>
               ))}
             </div>
@@ -1019,14 +1210,14 @@ function StudentListView({ stats }: { stats: any }) {
                     initial={{ height: "0%" }}
                     animate={{ height: `${val}%` }}
                     transition={{ duration: 1, delay: idx * 0.1, type: "spring", bounce: 0.1 }}
-                    className="w-full bg-gradient-to-t from-[#E8F5E9] to-[#22C55E] rounded-t-xl lg:rounded-t-2xl relative overflow-hidden shadow-sm group-hover:brightness-105 group-hover:shadow-lg transition-all"
+                    className={`w-full bg-gradient-to-t ${themeMode === 'Dark' ? 'from-slate-800 to-emerald-500' : 'from-emerald-50 to-emerald-500'} rounded-t-xl lg:rounded-t-2xl relative overflow-hidden shadow-sm group-hover:brightness-105 group-hover:shadow-lg transition-all`}
                   >
-                    <div className="absolute top-2 left-1/2 -translate-x-1/2 text-[9px] lg:text-[10px] font-black text-white bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                    <div className="absolute top-2 left-1/2 -translate-x-1/2 text-[9px] lg:text-[10px] font-black text-white bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                       {val}%
                     </div>
                   </motion.div>
                 </div>
-                <span className="text-[9px] lg:text-[10px] font-black text-slate-400 uppercase tracking-widest">{months[idx]}</span>
+                <span className={`text-[9px] lg:text-[10px] font-black ${t.muted} uppercase tracking-widest`}>{months[idx]}</span>
               </div>
             ))}
           </div>
@@ -1055,12 +1246,12 @@ function StudentListView({ stats }: { stats: any }) {
             </div>
           </div>
 
-          <div className="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-sm flex items-center justify-between group hover:border-[#22C55E]/30 transition-all cursor-pointer">
+          <div className={`bg-white ${t.card} rounded-[2.5rem] border ${t.border} p-8 shadow-sm flex items-center justify-between group hover:border-emerald-500/30 transition-all cursor-pointer`}>
             <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Active Students</p>
-              <h3 className="text-2xl font-black text-slate-900">{students.length} <span className="text-sm font-bold text-slate-400">Total</span></h3>
+              <p className={`text-[10px] font-black ${t.muted} uppercase tracking-widest mb-1`}>Active Students</p>
+              <h3 className={`text-2xl font-black ${t.heading}`}>{students.length} <span className={`text-sm font-bold ${t.muted}`}>Total</span></h3>
             </div>
-            <div className="w-14 h-14 bg-[#E8F5E9] text-[#22C55E] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+            <div className={`w-14 h-14 ${t.accentBg} ${t.accent} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform`}>
               <Users size={28} />
             </div>
           </div>
@@ -1068,11 +1259,11 @@ function StudentListView({ stats }: { stats: any }) {
       </div>
 
       {/* Student List Table */}
-      <div className="bg-white rounded-[3rem] border border-slate-100 shadow-sm overflow-hidden min-h-[400px]">
-        <div className="p-8 border-b border-slate-50 flex items-center justify-between bg-slate-50/30">
-          <h3 className="text-xl font-black text-slate-900">Enrolled Students</h3>
+      <div className={`${t.card} rounded-[3rem] border ${t.border} shadow-sm overflow-hidden min-h-[400px]`}>
+        <div className={`p-8 border-b ${t.border} ${t.search}`}>
+          <h3 className={`text-xl font-black ${t.heading}`}>Enrolled Students</h3>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-400 bg-white border border-slate-100 px-4 py-2 rounded-xl">
+            <span className={`text-xs font-bold ${t.muted} ${t.card} border ${t.border} px-4 py-2 rounded-xl`}>
               {filteredStudents.length} Students
             </span>
           </div>
@@ -1081,12 +1272,12 @@ function StudentListView({ stats }: { stats: any }) {
         <div className="overflow-x-auto overflow-y-hidden">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-slate-50">
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Student</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Academic Info</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Performance</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Engagement</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-right">Progress</th>
+              <tr className={`border-b ${t.border}`}>
+                <th className={`px-8 py-5 text-[10px] font-black ${t.muted} uppercase tracking-[0.2em]`}>Student</th>
+                <th className={`px-8 py-5 text-[10px] font-black ${t.muted} uppercase tracking-[0.2em]`}>Academic Info</th>
+                <th className={`px-8 py-5 text-[10px] font-black ${t.muted} uppercase tracking-[0.2em]`}>Performance</th>
+                <th className={`px-8 py-5 text-[10px] font-black ${t.muted} uppercase tracking-[0.2em]`}>Engagement</th>
+                <th className={`px-8 py-5 text-[10px] font-black ${t.muted} uppercase tracking-[0.2em] text-right`}>Progress</th>
               </tr>
             </thead>
             <tbody>
@@ -1334,16 +1525,16 @@ function StudentListView({ stats }: { stats: any }) {
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 50 }}
-                    className="absolute inset-0 bg-slate-50 z-[210] p-8 flex flex-col h-full overflow-hidden"
+                    className={`absolute inset-0 ${t.bg} z-[210] p-8 flex flex-col h-full overflow-hidden`}
                   >
                     <div className="flex items-center justify-between mb-8 shrink-0">
                       <div>
-                        <h3 className="text-2xl font-black text-slate-900">Academic Reports</h3>
-                        <p className="text-sm font-bold text-slate-500">Historical performance data</p>
+                        <h3 className={`text-2xl font-black ${t.heading}`}>Academic Reports</h3>
+                        <p className={`text-sm font-bold ${t.muted}`}>Historical performance data</p>
                       </div>
                       <button
                         onClick={() => setIsReportOpen(false)}
-                        className="p-3 bg-white hover:bg-slate-100 rounded-2xl shadow-sm border border-slate-200 transition-all text-slate-400"
+                        className={`p-3 ${t.card} hover:${t.search} rounded-2xl shadow-sm border ${t.border} transition-all ${t.muted}`}
                       >
                         <X size={20} />
                       </button>
@@ -1361,24 +1552,24 @@ function StudentListView({ stats }: { stats: any }) {
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: i * 0.1 }}
-                          className="bg-white p-6 rounded-3xl border border-slate-200 flex items-center justify-between hover:border-primary/30 hover:shadow-md transition-all group"
+                          className={`${t.card} p-6 rounded-3xl border ${t.border} flex items-center justify-between hover:border-emerald-500/30 hover:shadow-md transition-all group`}
                         >
                           <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                            <div className={`w-12 h-12 ${t.search} rounded-2xl flex items-center justify-center ${t.muted} group-hover:bg-emerald-500/10 group-hover:text-emerald-500 transition-colors`}>
                               <FileText size={24} />
                             </div>
                             <div>
-                              <p className="text-sm font-black text-slate-900">{report.title}</p>
+                              <p className={`text-sm font-black ${t.heading}`}>{report.title}</p>
                               <div className="flex items-center gap-2 mt-0.5">
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{report.date}</span>
-                                <span className="w-1 h-1 rounded-full bg-slate-200" />
-                                <span className="text-[10px] font-black text-primary uppercase tracking-widest">{report.tag}</span>
+                                <span className={`text-[10px] font-black ${t.muted} uppercase tracking-widest`}>{report.date}</span>
+                                <span className={`w-1 h-1 rounded-full ${t.muted.replace('text-', 'bg-')} opacity-30`} />
+                                <span className={`text-[10px] font-black ${t.accent} uppercase tracking-widest`}>{report.tag}</span>
                               </div>
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="text-lg font-black text-slate-900">{report.score}</p>
-                            <button className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline mt-0.5">Download PDF</button>
+                            <p className={`text-lg font-black ${t.heading}`}>{report.score}</p>
+                            <button className={`text-[10px] font-black ${t.accent} uppercase tracking-widest hover:underline mt-0.5`}>Download PDF</button>
                           </div>
                         </motion.div>
                       ))}
@@ -1400,26 +1591,26 @@ function StudentListView({ stats }: { stats: any }) {
   );
 }
 
-function StatCard({ icon, title, value, suffix, badge, progress, delay, suffixColor = "text-slate-500" }: any) {
+function StatCard({ icon, title, value, suffix, badge, progress, delay, theme: t, suffixColor = "text-slate-500" }: any) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay }}
-      className="bg-white p-6 rounded-[2rem] border border-[#E5E7EB] flex flex-col gap-3 shadow-sm relative h-[160px] group overflow-hidden hover-lift transition-all"
+      className={`${t.card} p-6 rounded-[2rem] border ${t.border} flex flex-col gap-3 shadow-sm relative h-[160px] group overflow-hidden hover-lift transition-all`}
     >
       <div className="flex items-start justify-between relative z-10">
         <div>
-          <p className="text-[11px] font-bold text-slate-500 mb-0.5 uppercase tracking-wider">{title}</p>
+          <p className={`text-[11px] font-bold ${t.muted} mb-0.5 uppercase tracking-wider`}>{title}</p>
           <div className="flex items-baseline gap-1 mt-1">
             <h3
-              className="text-4xl leading-none font-black text-slate-900 tracking-tight"
+              className={`text-4xl leading-none font-black ${t.heading} tracking-tight`}
             >
               {typeof value === 'number' ? <CountUp end={value} duration={2} separator="," /> : value}
             </h3>
           </div>
         </div>
-        <div className="shrink-0 bg-slate-50 p-2.5 rounded-2xl group-hover:scale-110 transition-transform duration-300">
+        <div className={`shrink-0 ${t.search} p-2.5 rounded-2xl group-hover:scale-110 transition-transform duration-300`}>
           {icon}
         </div>
       </div>
@@ -1430,12 +1621,12 @@ function StatCard({ icon, title, value, suffix, badge, progress, delay, suffixCo
         </span>
       </div>
       {progress !== undefined && (
-        <div className="w-full h-1.5 bg-slate-100 rounded-full mt-3 overflow-hidden relative z-10">
+        <div className={`w-full h-1.5 ${t.search} rounded-full mt-3 overflow-hidden relative z-10`}>
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 1.5, delay: delay + 0.2, ease: "easeOut" }}
-            className="h-full bg-[#22C55E] rounded-full"
+            className={`h-full ${t.accent.replace('text-', 'bg-')} rounded-full`}
           />
         </div>
       )}
@@ -1443,17 +1634,17 @@ function StatCard({ icon, title, value, suffix, badge, progress, delay, suffixCo
   );
 }
 
-function InteractiveRubricSlider({ label, val, max, onChange }: { label: string, val: number, max: number, onChange: (v: number) => void }) {
+function InteractiveRubricSlider({ label, val, max, onChange, theme: t }: { label: string, val: number, max: number, onChange: (v: number) => void, theme: any }) {
   const percent = (val / max) * 100;
 
   // Color coded logic
   const trackColor = percent <= 40 ? '#EAB308' : percent <= 70 ? '#84CC16' : '#22C55E';
-  const trackBgClass = percent <= 40 ? 'bg-yellow-50 text-yellow-600' : percent <= 70 ? 'bg-lime-50 text-lime-600' : 'bg-[#DCFCE7] text-[#22C55E]';
+  const trackBgClass = percent <= 40 ? 'bg-yellow-50 text-yellow-600' : percent <= 70 ? 'bg-lime-50 text-lime-600' : 'bg-emerald-50 text-emerald-600';
 
   return (
     <div className="space-y-4 group">
       <div className="flex justify-between text-xs font-bold items-end mb-1">
-        <span className="text-slate-500 uppercase tracking-widest text-[10px] transition-colors group-hover:text-slate-900">{label}</span>
+        <span className={`${t.muted} uppercase tracking-widest text-[10px] transition-colors group-hover:${t.text}`}>{label}</span>
         <motion.span
           key={val}
           initial={{ scale: 0.8, opacity: 0 }}
