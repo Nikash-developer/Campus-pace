@@ -20,6 +20,7 @@ import { calculateImpact } from '../lib/utils';
 import { Notice, Assignment } from '../types';
 
 import { AssignmentSubmissionView } from '../components/AssignmentSubmissionView';
+import { allQuestionPapers } from '../lib/mockPapers';
 
 type Tab = 'dashboard' | 'courses' | 'eco-tracker' | 'settings' | 'papers' | 'notes' | 'assignment-submission';
 
@@ -64,6 +65,20 @@ interface QuizQuestion {
   correctAnswer: number;
   explanation: string;
 }
+
+const mockPapers: QuestionPaper[] = [
+  { id: 1, subject: 'Applied Mathematics-III', year: '2023', semester: 'Semester 3', type: 'Regular', url: 'https://muquestionpapers.com/FE/Sem1/Applied_Mathematics_1_Dec_2023.pdf' },
+  { id: 2, subject: 'Data Structures & Algorithms', year: '2023', semester: 'Semester 3', type: 'Regular', url: 'https://muquestionpapers.com/SE/COMP/Sem3/Data_Structures_Dec_2023.pdf' },
+  { id: 3, subject: 'Digital Logic & Computer Architecture', year: '2022', semester: 'Semester 3', type: 'Regular', url: 'https://muquestionpapers.com/SE/COMP/Sem3/Digital_Logic_Computer_Architecture_May_2022.pdf' },
+  { id: 4, subject: 'Database Management Systems', year: '2023', semester: 'Semester 4', type: 'Regular', url: 'https://muquestionpapers.com/SE/COMP/Sem4/Database_Management_System_Dec_2023.pdf' },
+  { id: 5, subject: 'Operating Systems', year: '2022', semester: 'Semester 4', type: 'KT', url: 'https://muquestionpapers.com/SE/COMP/Sem4/Operating_System_May_2022.pdf' },
+  { id: 6, subject: 'Computer Networks', year: '2023', semester: 'Semester 5', type: 'Regular', url: 'https://muquestionpapers.com/TE/COMP/Sem5/Computer_Network_Dec_2023.pdf' },
+  { id: 7, subject: 'Artificial Intelligence', year: '2023', semester: 'Semester 6', type: 'Regular', url: 'https://muquestionpapers.com/TE/COMP/Sem6/Artificial_Intelligence_Dec_2023.pdf' },
+  { id: 8, subject: 'Software Engineering', year: '2022', semester: 'Semester 6', type: 'Regular', url: 'https://muquestionpapers.com/TE/COMP/Sem6/Software_Engineering_May_2022.pdf' },
+  { id: 9, subject: 'Cloud Computing', year: '2023', semester: 'Semester 7', type: 'Regular', url: 'https://muquestionpapers.com/BE/COMP/Sem7/Cloud_Computing_Dec_2023.pdf' },
+  { id: 10, subject: 'Big Data Analytics', year: '2023', semester: 'Semester 7', type: 'Regular', url: 'https://muquestionpapers.com/BE/COMP/Sem7/Big_Data_Analytics_Dec_2023.pdf' },
+  ...allQuestionPapers
+];
 
 const themes = {
   Light: {
@@ -852,7 +867,6 @@ export default function StudentDashboard() {
   const [showAllNotices, setShowAllNotices] = useState(false);
   const [isAIChatOpen, setIsAIChatOpen] = useState(false);
   const [reminderModal, setReminderModal] = useState<{ isOpen: boolean, assignmentId: number | null }>({ isOpen: false, assignmentId: null });
-  const [papers, setPapers] = useState<QuestionPaper[]>([]);
   const [activeAssignmentId, setActiveAssignmentId] = useState<number | null>(null);
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [selectedAssignment, setSelectedAssignment] = useState<AssignmentWithFile | null>(null);
@@ -869,6 +883,63 @@ export default function StudentDashboard() {
   const [selectedPaperYear, setSelectedPaperYear] = useState<string>('All Years');
   const [searchQuery, setSearchQuery] = useState('');
   const [paperSearchQuery, setPaperSearchQuery] = useState('');
+  const [papers, setPapers] = useState<QuestionPaper[]>([]);
+
+  // Consolidate papers source by MERGING mock and real data
+  const allPapersSource = useMemo(() => {
+    // Start with a copy of mockPapers
+    const combined = [...mockPapers];
+
+    // Add real papers from API if they don't already exist in mock
+    if (Array.isArray(papers)) {
+      papers.forEach(p => {
+        if (!combined.some(mp =>
+          mp.subject.toLowerCase() === p.subject.toLowerCase() &&
+          mp.year === p.year
+        )) {
+          combined.push(p);
+        }
+      });
+    }
+    return combined;
+  }, [papers]);
+
+  const filteredPapers = useMemo(() => {
+    return allPapersSource.filter(p => {
+      const matchSemester = selectedPaperSemester === 'All Semesters' || p.semester === selectedPaperSemester;
+      const matchYear = selectedPaperYear === 'All Years' || p.year === selectedPaperYear;
+      const matchSearch = (p.subject?.toLowerCase() || '').includes(paperSearchQuery.toLowerCase());
+      return matchSemester && matchYear && matchSearch;
+    });
+  }, [allPapersSource, selectedPaperSemester, selectedPaperYear, paperSearchQuery]);
+
+  const semesterOptions = useMemo(() => {
+    const semSet = new Set<string>();
+    allPapersSource.forEach(p => {
+      if (p.semester) {
+        // Normalize "3" to "Semester 3" if necessary, though mock uses full string
+        const s = p.semester.toString();
+        semSet.add(s.startsWith('Semester') ? s : `Semester ${s}`);
+      }
+    });
+
+    // Fallback if empty
+    if (semSet.size === 0) return ['All Semesters', 'Semester 1', 'Semester 2', 'Semester 3', 'Semester 4', 'Semester 5', 'Semester 6', 'Semester 7', 'Semester 8'];
+
+    return ['All Semesters', ...Array.from(semSet).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))];
+  }, [allPapersSource]);
+
+  const yearOptions = useMemo(() => {
+    const yearSet = new Set<string>();
+    allPapersSource.forEach(p => {
+      if (p.year) yearSet.add(p.year.toString());
+    });
+
+    // Fallback if empty
+    if (yearSet.size === 0) return ['All Years', '2025', '2024', '2023', '2022', '2021', '2020'];
+
+    return ['All Years', ...Array.from(yearSet).sort((a, b) => Number(b) - Number(a))];
+  }, [allPapersSource]);
   const [showAssistant, setShowAssistant] = useState(false);
   const [isAssistantTyping, setIsAssistantTyping] = useState(false);
   const [assistantMessages, setAssistantMessages] = useState([
@@ -1154,19 +1225,6 @@ export default function StudentDashboard() {
       }
     ];
 
-    const mockPapers: QuestionPaper[] = [
-      { id: 1, subject: 'Applied Mathematics-III', year: '2023', semester: 'Semester 3', type: 'Regular', url: 'https://muquestionpapers.com/FE/Sem1/Applied_Mathematics_1_Dec_2023.pdf' },
-      { id: 2, subject: 'Data Structures & Algorithms', year: '2023', semester: 'Semester 3', type: 'Regular', url: 'https://muquestionpapers.com/SE/COMP/Sem3/Data_Structures_Dec_2023.pdf' },
-      { id: 3, subject: 'Digital Logic & Computer Architecture', year: '2022', semester: 'Semester 3', type: 'Regular', url: 'https://muquestionpapers.com/SE/COMP/Sem3/Digital_Logic_Computer_Architecture_May_2022.pdf' },
-      { id: 4, subject: 'Database Management Systems', year: '2023', semester: 'Semester 4', type: 'Regular', url: 'https://muquestionpapers.com/SE/COMP/Sem4/Database_Management_System_Dec_2023.pdf' },
-      { id: 5, subject: 'Operating Systems', year: '2022', semester: 'Semester 4', type: 'KT', url: 'https://muquestionpapers.com/SE/COMP/Sem4/Operating_System_May_2022.pdf' },
-      { id: 6, subject: 'Computer Networks', year: '2023', semester: 'Semester 5', type: 'Regular', url: 'https://muquestionpapers.com/TE/COMP/Sem5/Computer_Network_Dec_2023.pdf' },
-      { id: 7, subject: 'Artificial Intelligence', year: '2023', semester: 'Semester 6', type: 'Regular', url: 'https://muquestionpapers.com/TE/COMP/Sem6/Artificial_Intelligence_Dec_2023.pdf' },
-      { id: 8, subject: 'Software Engineering', year: '2022', semester: 'Semester 6', type: 'Regular', url: 'https://muquestionpapers.com/TE/COMP/Sem6/Software_Engineering_May_2022.pdf' },
-      { id: 9, subject: 'Cloud Computing', year: '2023', semester: 'Semester 7', type: 'Regular', url: 'https://muquestionpapers.com/BE/COMP/Sem7/Cloud_Computing_Dec_2023.pdf' },
-      { id: 10, subject: 'Big Data Analytics', year: '2023', semester: 'Semester 7', type: 'Regular', url: 'https://muquestionpapers.com/BE/COMP/Sem7/Big_Data_Analytics_Dec_2023.pdf' },
-    ];
-
     const mockCourses: Course[] = [
       // Semester 1
       { id: 101, title: "Applied Mathematics I", instructor: "Dr. A. Sharma", progress: 100, color: "blue", icon: <Calculator size={24} />, semester: 1, syllabus: ["Matrices", "Complex Numbers", "Integration Basics"], syllabusUrl: "https://www.vidyalankar.org/engineering/assets/docs/fe/applied-mathematics-I-syllabus-mumbai-university.pdf" },
@@ -1213,7 +1271,9 @@ export default function StudentDashboard() {
         const res = await fetch('/api/question-papers');
         if (res.ok) {
           const data = await res.json();
-          setPapers(data);
+          if (data && Array.isArray(data) && data.length > 0) {
+            setPapers(data);
+          }
         }
       } catch (err) {
         console.error('Failed to fetch papers', err);
@@ -1236,7 +1296,7 @@ export default function StudentDashboard() {
     }
     setCourses(mockCourses);
 
-    // Fetch real papers from DB instead of mocks
+    // Fetch real papers from DB instead of mocks, but keep mocks if fetch fails
     fetchPapers();
   }, []);
 
@@ -1673,11 +1733,11 @@ export default function StudentDashboard() {
                           <AssignmentItem
                             key={assignment.id}
                             assignment={assignment}
-                            onRemind={() => setReminderModal({ isOpen: true, assignmentId: assignment.id })}
-                            onAction={(action) => handleAssignmentAction(assignment.id, action)}
+                            onRemind={() => setReminderModal({ isOpen: true, assignmentId: Number(assignment.id) })}
+                            onAction={(action) => handleAssignmentAction(Number(assignment.id), action)}
                             onDetails={() => setSelectedAssignment(assignment)}
-                            onUpload={(file) => handleFileUpload(assignment.id, file)}
-                            onDeleteUpload={() => handleDeleteUpload(assignment.id)}
+                            onUpload={(file) => handleFileUpload(Number(assignment.id), file)}
+                            onDeleteUpload={() => handleDeleteUpload(Number(assignment.id))}
                             isActive={activeAssignmentId === assignment.id}
                             timeLeft={activeAssignmentId === assignment.id ? formatTime(timeLeft) : undefined}
                             theme={t}
@@ -2140,14 +2200,14 @@ export default function StudentDashboard() {
                   </motion.button>
                   <CustomDropdown
                     label="Semester"
-                    options={['All Semesters', ...Array.from(new Set(papers.map(p => p.semester))).sort()]}
+                    options={semesterOptions}
                     value={selectedPaperSemester}
                     onChange={setSelectedPaperSemester}
                     theme={t}
                   />
                   <CustomDropdown
                     label="Year"
-                    options={['All Years', ...Array.from(new Set(papers.map(p => p.year))).sort((a, b) => Number(b) - Number(a))]}
+                    options={yearOptions}
                     value={selectedPaperYear}
                     onChange={setSelectedPaperYear}
                     theme={t}
@@ -2177,50 +2237,46 @@ export default function StudentDashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {papers
-                        .filter(p => selectedPaperSemester === 'All Semesters' || p.semester === selectedPaperSemester)
-                        .filter(p => selectedPaperYear === 'All Years' || p.year === selectedPaperYear)
-                        .filter(p => p.subject.toLowerCase().includes(searchQuery.toLowerCase()) && p.subject.toLowerCase().includes(paperSearchQuery.toLowerCase()))
-                        .map((paper) => (
-                          <motion.tr
-                            key={paper.id}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className={`border-b ${t.border} last:border-0 hover:${t.search} transition-colors group`}
-                          >
-                            <td className="px-8 py-6">
-                              <div className="flex items-center gap-3">
-                                <div className={`p-2 ${t.search} ${t.accent.replace('text-', 'bg-').split(' ')[0]}/10 ${t.accent} rounded-lg`}>
-                                  <FileQuestion size={18} />
-                                </div>
-                                <span className={`font-bold ${t.heading}`}>{paper.subject}</span>
+                      {filteredPapers.map((paper) => (
+                        <motion.tr
+                          key={paper.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className={`border-b ${t.border} last:border-0 hover:${t.search} transition-colors group`}
+                        >
+                          <td className="px-8 py-6">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 ${t.search} ${t.accent.replace('text-', 'bg-').split(' ')[0]}/10 ${t.accent} rounded-lg`}>
+                                <FileQuestion size={18} />
                               </div>
-                            </td>
-                            <td className={`px-8 py-6 text-sm font-bold ${t.muted}`}>{paper.year}</td>
-                            <td className={`px-8 py-6 text-sm font-bold ${t.muted}`}>{paper.semester}</td>
-                            <td className="px-8 py-6">
-                              <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${paper.type === 'Regular' ? 'bg-green-500/10 text-green-500' : 'bg-orange-500/10 text-orange-500'
-                                }`}>
-                                {paper.type}
-                              </span>
-                            </td>
-                            <td className="px-8 py-6 text-right">
-                              <a
-                                href={paper.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={`p-2 ${t.muted} hover:text-primary transition-colors inline-block`}
-                                title="View/Download Paper"
-                              >
-                                <FileDown size={20} />
-                              </a>
-                            </td>
-                          </motion.tr>
-                        ))}
+                              <span className={`font-bold ${t.heading}`}>{paper.subject}</span>
+                            </div>
+                          </td>
+                          <td className={`px-8 py-6 text-sm font-bold ${t.muted}`}>{paper.year}</td>
+                          <td className={`px-8 py-6 text-sm font-bold ${t.muted}`}>{paper.semester}</td>
+                          <td className="px-8 py-6">
+                            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${paper.type === 'Regular' ? 'bg-green-500/10 text-green-500' : 'bg-orange-500/10 text-orange-500'
+                              }`}>
+                              {paper.type}
+                            </span>
+                          </td>
+                          <td className="px-8 py-6 text-right">
+                            <a
+                              href={paper.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`p-2 ${t.muted} hover:text-primary transition-colors inline-block`}
+                              title="View/Download Paper"
+                            >
+                              <FileDown size={20} />
+                            </a>
+                          </td>
+                        </motion.tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
-                {papers.filter(p => (selectedPaperSemester === 'All Semesters' || p.semester === selectedPaperSemester) && (selectedPaperYear === 'All Years' || p.year === selectedPaperYear) && p.subject.toLowerCase().includes(searchQuery.toLowerCase()) && p.subject.toLowerCase().includes(paperSearchQuery.toLowerCase())).length === 0 && (
+                {filteredPapers.length === 0 && (
                   <div className="p-20 text-center">
                     <div className={`${t.search} w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 ${t.muted} opacity-20`}>
                       <FileQuestion size={40} />

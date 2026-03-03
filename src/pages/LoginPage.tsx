@@ -148,10 +148,17 @@ export default function LoginPage() {
         login({ id: firebaseUser.uid, ...userData } as any);
       }
 
-      const userData = (await getDoc(doc(db, 'users', firebaseUser.uid))).data();
-      if (userData?.role === 'student') navigate('/student');
-      else if (userData?.role === 'admin') navigate('/admin');
-      else navigate('/faculty');
+      // Navigate based on the intent (selected role tab)
+      if (role === 'student') navigate('/student');
+      else if (role === 'faculty') navigate('/faculty');
+      else if (role === 'admin') navigate('/admin');
+      else {
+        // Fallback to DB role if role state is somehow lost
+        const userData = (await getDoc(doc(db, 'users', firebaseUser.uid))).data();
+        if (userData?.role === 'student') navigate('/student');
+        else if (userData?.role === 'admin') navigate('/admin');
+        else navigate('/faculty');
+      }
 
     } catch (err: any) {
       console.error('Social Login Error:', err);
@@ -161,7 +168,11 @@ export default function LoginPage() {
       } else if (err.code === 'auth/popup-closed-by-user') {
         msg = 'Login popup was closed before completion.';
       } else if (err.code === 'auth/unauthorized-domain') {
-        msg = 'This domain is not authorized for Firebase Auth.';
+        msg = 'This domain is not authorized for Firebase Auth. Check your Firebase console settings.';
+      } else if (err.code === 'auth/cancelled-popup-request') {
+        msg = 'Sign-in was cancelled. Please try again.';
+      } else if (err.code === 'auth/popup-blocked') {
+        msg = 'Sign-in popup was blocked by your browser. Please allow popups for this site.';
       }
       setError(msg);
     } finally {

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, ReactNode } from 'react';
 import { motion } from 'motion/react';
-import { 
-  Leaf, Search, Bell, LayoutDashboard, BookOpen, 
-  TreePine, Settings, LogOut, FileText, CloudOff, 
+import {
+  Leaf, Search, Bell, LayoutDashboard, BookOpen,
+  TreePine, Settings, LogOut, FileText, CloudOff,
   Zap, Plus, Download, ChevronRight, Users,
   CheckCircle2, Clock, AlertCircle, History, Send,
   Bold, Italic, Underline, List, Link as LinkIcon, Image as ImageIcon
@@ -24,7 +24,7 @@ export default function NoticeAdmin() {
 
   const handlePublish = async () => {
     if (!title || !content) return;
-    
+
     const res = await fetch('/api/notices', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -84,9 +84,9 @@ export default function NoticeAdmin() {
         <header className="flex items-center justify-between mb-10">
           <div className="relative w-96">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
-            <input 
-              type="text" 
-              placeholder="Search..." 
+            <input
+              type="text"
+              placeholder="Search..."
               className="w-full pl-12 pr-4 py-3 bg-white border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all shadow-sm"
             />
           </div>
@@ -94,7 +94,7 @@ export default function NoticeAdmin() {
             <button className="px-6 py-2.5 bg-white border border-slate-200 text-slate-700 text-sm font-bold rounded-xl hover:bg-slate-50 transition-all flex items-center gap-2">
               <History size={18} /> History
             </button>
-            <button 
+            <button
               onClick={handlePublish}
               className="px-6 py-2.5 bg-primary hover:bg-primary-dark text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
             >
@@ -122,8 +122,8 @@ export default function NoticeAdmin() {
               <div className="space-y-8">
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-slate-700">Notice Title</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="e.g. Annual Science Fair Registration"
@@ -144,7 +144,7 @@ export default function NoticeAdmin() {
                       <div className="flex-1" />
                       <button className="text-slate-400 hover:text-primary transition-colors"><ImageIcon size={18} /></button>
                     </div>
-                    <textarea 
+                    <textarea
                       value={content}
                       onChange={(e) => setContent(e.target.value)}
                       placeholder="Write the details of the notice here..."
@@ -162,7 +162,7 @@ export default function NoticeAdmin() {
                     <label className="text-sm font-bold text-slate-700">Urgency Level</label>
                     <div className="flex items-center justify-between px-6 py-4 bg-bg-light border border-slate-50 rounded-2xl">
                       <span className="text-sm font-medium text-slate-500">Emergency Alert</span>
-                      <button 
+                      <button
                         onClick={() => setIsEmergency(!isEmergency)}
                         className={`w-12 h-6 rounded-full relative transition-colors ${isEmergency ? 'bg-primary' : 'bg-slate-200'}`}
                       >
@@ -176,14 +176,13 @@ export default function NoticeAdmin() {
                   <label className="text-sm font-bold text-slate-700">Target Departments</label>
                   <div className="flex flex-wrap gap-3">
                     {['All Students', 'Engineering', 'Arts & Design', 'Sciences', 'Business', 'Faculty Only'].map((dept) => (
-                      <button 
+                      <button
                         key={dept}
                         onClick={() => setTargetDept(dept)}
-                        className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all border ${
-                          targetDept === dept 
-                            ? 'bg-primary/10 border-primary text-primary' 
-                            : 'bg-white border-slate-100 text-slate-400 hover:border-primary/20 hover:text-slate-600'
-                        }`}
+                        className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all border ${targetDept === dept
+                          ? 'bg-primary/10 border-primary text-primary'
+                          : 'bg-white border-slate-100 text-slate-400 hover:border-primary/20 hover:text-slate-600'
+                          }`}
                       >
                         {targetDept === dept && <CheckCircle2 size={14} className="inline mr-2" />}
                         {dept}
@@ -238,9 +237,8 @@ export default function NoticeAdmin() {
 
 function NavItem({ icon, label, active = false }: { icon: React.ReactNode, label: string, active?: boolean }) {
   return (
-    <button className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all font-bold text-sm ${
-      active ? 'bg-primary/10 text-primary' : 'text-slate-400 hover:bg-bg-light hover:text-slate-600'
-    }`}>
+    <button className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all font-bold text-sm ${active ? 'bg-primary/10 text-primary' : 'text-slate-400 hover:bg-bg-light hover:text-slate-600'
+      }`}>
       {icon}
       {label}
     </button>
