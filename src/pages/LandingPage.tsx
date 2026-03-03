@@ -44,6 +44,7 @@ const AnimatedSection = ({ children, className, id }: { children: React.ReactNod
 export default function LandingPage() {
   const [isWatchDemoOpen, setIsWatchDemoOpen] = useState(false);
   const [isScheduleDemoOpen, setIsScheduleDemoOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [demoForm, setDemoForm] = useState({ name: '', email: '', university: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -71,15 +72,17 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] font-sans text-slate-800 selection:bg-primary/20">
+    <div className="min-h-screen bg-[#FAFAFA] font-sans text-slate-800 selection:bg-primary/20 overflow-x-hidden">
       {/* Navbar */}
-      <nav className="fixed top-0 w-full z-50 bg-[#FAFAFA]/90 backdrop-blur-md px-6 py-4 lg:px-20 flex items-center justify-between">
+      <nav className="fixed top-0 w-full z-50 bg-[#FAFAFA]/90 backdrop-blur-md px-6 py-4 lg:px-20 flex items-center justify-between border-b border-slate-100/50">
         <div className="flex items-center gap-3 text-slate-900 cursor-pointer group" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
           <div className="p-2.5 bg-[#E8F5E9] rounded-2xl text-[#4CAF50] shadow-sm transform group-hover:rotate-12 transition-transform">
             <Leaf size={28} fill="currentColor" />
           </div>
           <span className="text-2xl font-black tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent italic">Green-Sync</span>
         </div>
+
+        {/* Desktop Menu */}
         <div className="hidden lg:flex items-center gap-8">
           <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Home</button>
           <button onClick={() => scrollToSection('problem')} className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Problem</button>
@@ -89,11 +92,59 @@ export default function LandingPage() {
             Get Started
           </Link>
         </div>
+
+        {/* Mobile menu button */}
+        <div className="lg:hidden">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="p-2 text-slate-600 hover:text-slate-900"
+          >
+            {isMenuOpen ? <X size={28} /> : <div className="flex flex-col gap-1.5 w-6"><div className="h-0.5 w-full bg-current rounded-full"></div><div className="h-0.5 w-full bg-current rounded-full"></div><div className="h-0.5 w-full bg-current rounded-full"></div></div>}
+          </button>
+        </div>
       </nav>
 
+      {/* Mobile Menu Backdrop */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMenuOpen(false)}
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[51] lg:hidden"
+            />
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 bottom-0 w-[280px] bg-white z-[52] lg:hidden shadow-2xl p-8 flex flex-col gap-8"
+            >
+              <div className="flex items-center gap-3 text-slate-900 mb-4">
+                <div className="p-2 bg-[#E8F5E9] rounded-xl text-[#4CAF50]">
+                  <Leaf size={24} fill="currentColor" />
+                </div>
+                <span className="text-xl font-black italic">Green-Sync</span>
+              </div>
+              <div className="flex flex-col gap-6">
+                <button onClick={() => { setIsMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="text-left text-lg font-bold text-slate-700 flex items-center gap-3"><ArrowRight size={18} className="text-[#81C784]" /> Home</button>
+                <button onClick={() => { setIsMenuOpen(false); scrollToSection('problem'); }} className="text-left text-lg font-bold text-slate-700 flex items-center gap-3"><ArrowRight size={18} className="text-[#81C784]" /> Problem</button>
+                <button onClick={() => { setIsMenuOpen(false); scrollToSection('impact'); }} className="text-left text-lg font-bold text-slate-700 flex items-center gap-3"><ArrowRight size={18} className="text-[#81C784]" /> Impact</button>
+                <button onClick={() => { setIsMenuOpen(false); scrollToSection('how-it-works'); }} className="text-left text-lg font-bold text-slate-700 flex items-center gap-3"><ArrowRight size={18} className="text-[#81C784]" /> How It Works</button>
+              </div>
+              <Link to="/login" className="mt-auto px-8 py-4 bg-[#81C784] hover:bg-[#66BB6A] text-white font-bold rounded-2xl transition-all shadow-lg text-center">
+                Get Started
+              </Link>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
       {/* Hero Section */}
-      <section className="pt-32 pb-16 px-6 lg:px-20 overflow-hidden max-w-[1400px] mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <section className="pt-24 lg:pt-32 pb-16 px-6 lg:px-20 overflow-hidden max-w-[1400px] mx-auto">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <motion.div
             initial="hidden"
             animate="visible"
@@ -105,22 +156,22 @@ export default function LandingPage() {
               <span className="text-[10px] font-bold uppercase tracking-wider">Official Campus Partner</span>
             </motion.div>
 
-            <motion.h1 variants={fadeInUp} className="text-5xl lg:text-[5.5rem] font-black leading-[1.05] text-[#111827] tracking-tight">
+            <motion.h1 variants={fadeInUp} className="text-4xl sm:text-5xl lg:text-[5.5rem] font-black leading-[1.1] lg:leading-[1.05] text-[#111827] tracking-tight">
               Digitizing<br />Campus.<br />
               <span className="text-[#81C784]">Saving Nature.</span>
             </motion.h1>
 
-            <motion.p variants={fadeInUp} className="text-lg text-slate-500 max-w-md leading-relaxed">
+            <motion.p variants={fadeInUp} className="text-base sm:text-lg text-slate-500 max-w-md leading-relaxed">
               Join the unified paperless campus initiative. Submit digital assignments, track your eco-footprint, and watch our campus grow greener every day.
             </motion.p>
 
-            <motion.div variants={fadeInUp} className="flex flex-wrap items-center gap-4 pt-4">
-              <Link to="/login" className="px-8 py-4 bg-[#81C784] hover:bg-[#66BB6A] text-white font-bold rounded-full transition-all shadow-lg shadow-[#81C784]/30">
+            <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
+              <Link to="/login" className="px-8 py-4 bg-[#81C784] hover:bg-[#66BB6A] text-white font-bold rounded-full transition-all shadow-lg shadow-[#81C784]/30 text-center">
                 Start Saving Today
               </Link>
               <button
                 onClick={() => setIsWatchDemoOpen(true)}
-                className="px-8 py-4 bg-white border border-slate-200 text-slate-700 font-bold rounded-full hover:bg-slate-50 transition-all flex items-center gap-2 shadow-sm"
+                className="px-8 py-4 bg-white border border-slate-200 text-slate-700 font-bold rounded-full hover:bg-slate-50 transition-all flex items-center justify-center gap-2 shadow-sm"
               >
                 <div className="w-6 h-6 rounded-full bg-[#E8F5E9] flex items-center justify-center text-[#4CAF50]">
                   <Play size={12} fill="currentColor" />
@@ -129,7 +180,7 @@ export default function LandingPage() {
               </button>
             </motion.div>
 
-            <motion.div variants={fadeInUp} className="flex items-center gap-4 mt-6">
+            <motion.div variants={fadeInUp} className="flex items-center gap-4 mt-4">
               <div className="flex -space-x-3">
                 <img src="https://i.pravatar.cc/100?img=1" alt="User" className="w-10 h-10 rounded-full border-2 border-white object-cover" />
                 <img src="https://i.pravatar.cc/100?img=2" alt="User" className="w-10 h-10 rounded-full border-2 border-white object-cover" />
@@ -187,21 +238,21 @@ export default function LandingPage() {
 
       {/* Stats Section */}
       <AnimatedSection className="py-12 border-y border-slate-200/60 bg-white">
-        <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 divide-y md:divide-y-0 md:divide-x divide-slate-200/60">
-          <div className="flex flex-col items-center md:items-start md:pl-8 text-center md:text-left pt-6 md:pt-0">
-            <Leaf className="text-[#81C784] w-8 h-8 mb-4" />
-            <h3 className="text-4xl font-black text-slate-900 mb-1">1,245</h3>
-            <p className="text-sm text-slate-500 font-medium">Trees Saved Annually</p>
+        <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 divide-y md:divide-y-0 md:divide-x divide-slate-200/60">
+          <div className="flex flex-col items-center md:items-start md:pl-8 text-center md:text-left pt-6 first:pt-0 md:pt-0">
+            <Leaf className="text-[#81C784] w-8 h-8 mb-4 sm:mb-6" />
+            <h3 className="text-4xl sm:text-5xl font-black text-slate-900 mb-1">1,245</h3>
+            <p className="text-sm sm:text-base text-slate-500 font-medium">Trees Saved Annually</p>
           </div>
-          <div className="flex flex-col items-center md:items-start md:pl-12 text-center md:text-left pt-6 md:pt-0">
-            <FileText className="text-[#81C784] w-8 h-8 mb-4" />
-            <h3 className="text-4xl font-black text-slate-900 mb-1">500k+</h3>
-            <p className="text-sm text-slate-500 font-medium">Paper Sheets Avoided</p>
+          <div className="flex flex-col items-center md:items-start md:pl-12 text-center md:text-left pt-12 md:pt-0">
+            <FileText className="text-[#81C784] w-8 h-8 mb-4 sm:mb-6" />
+            <h3 className="text-4xl sm:text-5xl font-black text-slate-900 mb-1">500k+</h3>
+            <p className="text-sm sm:text-base text-slate-500 font-medium">Paper Sheets Avoided</p>
           </div>
-          <div className="flex flex-col items-center md:items-start md:pl-12 text-center md:text-left pt-6 md:pt-0">
-            <Cloud className="text-[#81C784] w-8 h-8 mb-4" />
-            <h3 className="text-4xl font-black text-slate-900 mb-1">12.5 T</h3>
-            <p className="text-sm text-slate-500 font-medium">Carbon Offset</p>
+          <div className="flex flex-col items-center md:items-start md:pl-12 text-center md:text-left pt-12 md:pt-0">
+            <Cloud className="text-[#81C784] w-8 h-8 mb-4 sm:mb-6" />
+            <h3 className="text-4xl sm:text-5xl font-black text-slate-900 mb-1">12.5 T</h3>
+            <p className="text-sm sm:text-base text-slate-500 font-medium">Carbon Offset</p>
           </div>
         </div>
       </AnimatedSection>
@@ -217,39 +268,39 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Card 1 */}
-            <div className="bg-white p-10 rounded-[2rem] shadow-sm border border-slate-100 flex flex-col">
-              <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center mb-8">
+            <div className="bg-white p-8 sm:p-10 rounded-[2rem] shadow-sm border border-slate-100 flex flex-col group hover:shadow-xl transition-all duration-500">
+              <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
                 <XCircle className="text-red-500 w-6 h-6" />
               </div>
-              <h3 className="text-xl font-bold mb-4 text-slate-900">Excessive Waste</h3>
-              <p className="text-slate-500 text-sm leading-relaxed">
+              <h3 className="text-xl sm:text-2xl font-bold mb-4 text-slate-900">Excessive Waste</h3>
+              <p className="text-slate-500 text-sm sm:text-base leading-relaxed">
                 Thousands of sheets of paper are wasted every semester per student. Most end up in landfills, not recycling bins.
               </p>
             </div>
 
             {/* Card 2 */}
-            <div className="bg-white p-10 rounded-[2rem] shadow-sm border border-slate-100 flex flex-col">
-              <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center mb-8">
+            <div className="bg-white p-8 sm:p-10 rounded-[2rem] shadow-sm border border-slate-100 flex flex-col group hover:shadow-xl transition-all duration-500">
+              <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
                 <Frown className="text-orange-500 w-6 h-6" />
               </div>
-              <h3 className="text-xl font-bold mb-4 text-slate-900">Lost Assignments</h3>
-              <p className="text-slate-500 text-sm leading-relaxed">
+              <h3 className="text-xl sm:text-2xl font-bold mb-4 text-slate-900">Lost Assignments</h3>
+              <p className="text-slate-500 text-sm sm:text-base leading-relaxed">
                 Physical papers get lost, damaged by coffee spills, or misplaced. The "dog ate my homework" era ends here.
               </p>
             </div>
 
             {/* Card 3 - Solution */}
-            <div className="bg-[#81C784] p-10 rounded-[2rem] shadow-xl shadow-[#81C784]/20 flex flex-col text-white relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-8 opacity-20">
+            <div className="bg-[#81C784] p-8 sm:p-10 rounded-[2rem] shadow-xl shadow-[#81C784]/20 flex flex-col text-white relative overflow-hidden group hover:-translate-y-2 transition-all duration-500">
+              <div className="absolute top-0 right-0 p-8 opacity-20 group-hover:scale-125 transition-transform duration-700">
                 <CheckCircle2 className="w-32 h-32" />
               </div>
               <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-8 backdrop-blur-sm relative z-10">
                 <Users className="text-white w-6 h-6" />
               </div>
-              <h3 className="text-xl font-bold mb-4 relative z-10">The Green-Sync Solution</h3>
-              <p className="text-white/90 text-sm leading-relaxed mb-8 relative z-10">
+              <h3 className="text-xl sm:text-2xl font-bold mb-4 relative z-10">The Green-Sync Solution</h3>
+              <p className="text-white/90 text-sm sm:text-base leading-relaxed mb-8 relative z-10">
                 Instant digital submissions, cloud backups, and real-time impact tracking. Secure, eco-friendly, and always accessible.
               </p>
               <ul className="space-y-3 relative z-10 mt-auto">
@@ -267,12 +318,12 @@ export default function LandingPage() {
       {/* Impact Section */}
       <AnimatedSection id="impact" className="py-24 px-6 lg:px-20 bg-white">
         <div className="max-w-[1200px] mx-auto grid lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <h2 className="text-4xl lg:text-5xl font-black text-slate-900 mb-6 tracking-tight">
+          <div className="order-2 lg:order-1">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 mb-6 tracking-tight">
               Real Impact,<br />
               <span className="text-[#81C784]">Measurable Results.</span>
             </h2>
-            <p className="text-slate-500 mb-12 text-lg leading-relaxed">
+            <p className="text-slate-500 mb-12 text-base sm:text-lg leading-relaxed">
               We believe in transparency. Track the collective effort of your campus in real-time. Every digital submission contributes to a healthier planet.
             </p>
 
@@ -300,39 +351,27 @@ export default function LandingPage() {
                 </div>
                 <p className="text-[10px] text-slate-400 mt-2 font-medium">Across 12 Departments</p>
               </div>
-
-              {/* Progress 3 */}
-              <div>
-                <div className="flex justify-between text-sm font-bold mb-2">
-                  <span className="text-slate-900">Water Saved (Liters)</span>
-                  <span className="text-[#81C784]">45%</span>
-                </div>
-                <div className="w-full bg-slate-100 rounded-full h-2.5">
-                  <motion.div initial={{ width: 0 }} whileInView={{ width: '45%' }} transition={{ duration: 1, delay: 0.4 }} className="bg-[#81C784] h-full rounded-full" />
-                </div>
-                <p className="text-[10px] text-slate-400 mt-2 font-medium">From paper production reduction</p>
-              </div>
             </div>
           </div>
 
-          <div className="relative">
-            <div className="aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl">
+          <div className="relative order-1 lg:order-2">
+            <div className="aspect-[4/5] sm:aspect-square lg:aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl">
               <img
                 src={forestEcoImg}
-                alt="Breathtaking biodiverse forest path with high-tech overlays"
+                alt="Breathtaking biodiverse forest path"
                 className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-1000"
                 referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-              <div className="absolute bottom-8 left-8 right-8">
-                <div className="bg-white/95 backdrop-blur-md p-5 rounded-2xl shadow-lg flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-[#E8F5E9] flex items-center justify-center text-[#4CAF50]">
+              <div className="absolute bottom-4 left-4 right-4 sm:bottom-8 sm:left-8 sm:right-8">
+                <div className="bg-white/95 backdrop-blur-md p-4 sm:p-5 rounded-2xl shadow-lg flex items-center gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#E8F5E9] flex items-center justify-center text-[#4CAF50]">
                     <TrendingUp size={24} />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-500 uppercase">Monthly Growth</p>
-                    <p className="text-lg font-black text-slate-900">+24% Participation</p>
+                    <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase">Monthly Growth</p>
+                    <p className="text-base sm:text-lg font-black text-slate-900">+24% Participation</p>
                   </div>
                 </div>
               </div>
@@ -344,14 +383,14 @@ export default function LandingPage() {
       {/* How It Works */}
       <AnimatedSection id="how-it-works" className="py-24 px-6 lg:px-20 bg-[#FAFAFA]">
         <div className="max-w-[1200px] mx-auto">
-          <div className="text-center mb-20">
-            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">How It Works</h2>
-            <p className="text-slate-500 text-lg">Simple steps to transform your campus workflow.</p>
+          <div className="text-center mb-16 sm:mb-20">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">How It Works</h2>
+            <p className="text-slate-500 text-base sm:text-lg">Simple steps to transform your campus workflow.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 relative">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 relative">
             {/* Connecting Line (Desktop) */}
-            <div className="hidden md:block absolute top-12 left-[10%] right-[10%] h-0.5 bg-slate-200" />
+            <div className="hidden lg:block absolute top-12 left-[10%] right-[10%] h-0.5 bg-slate-200" />
 
             {[
               { step: 1, title: "Sign Up", desc: "Students and faculty create secure accounts linked to university ID.", icon: <Users /> },
@@ -359,8 +398,8 @@ export default function LandingPage() {
               { step: 3, title: "Grade & Review", desc: "Professors grade with digital tools. Feedback is instant and paper-free.", icon: <ClipboardCheck /> },
               { step: 4, title: "Track Impact", desc: "Watch your personal and campus-wide eco-stats grow in real-time.", icon: <LineChart /> }
             ].map((item, i) => (
-              <div key={i} className="relative flex flex-col items-center text-center">
-                <div className="w-24 h-24 bg-white rounded-full shadow-md border border-slate-100 flex items-center justify-center relative z-10 mb-6">
+              <div key={i} className="relative flex flex-col items-center text-center group">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-3xl shadow-md border border-slate-100 flex items-center justify-center relative z-10 mb-6 group-hover:rotate-6 transition-transform">
                   <div className="text-slate-700 w-8 h-8">
                     {item.icon}
                   </div>

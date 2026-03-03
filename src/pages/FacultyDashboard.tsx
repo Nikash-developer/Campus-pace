@@ -19,6 +19,7 @@ export default function FacultyDashboard() {
   const [activeNav, setActiveNav] = useState("Assignments");
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showNewAssignmentModal, setShowNewAssignmentModal] = useState(false);
   const [newAssignmentCourse, setNewAssignmentCourse] = useState("Env Science 101");
   const [assignmentFiles, setAssignmentFiles] = useState<File[]>([]);
@@ -128,15 +129,27 @@ export default function FacultyDashboard() {
       className="min-h-screen bg-[#F8FAF9] flex flex-col font-sans"
     >
       {/* Top Navbar */}
-      <header className="bg-white border-b border-[#E5E7EB] flex items-center justify-between px-8 py-4 sticky top-0 z-40">
-        <div className="flex items-center gap-12 flex-1 max-w-4xl">
-          <div className="flex items-center gap-3 shrink-0 group cursor-pointer" onClick={() => setActiveNav('Notices')}>
-            <div className="p-2 bg-[#E8F5E9] rounded-2xl text-[#22C55E] shadow-sm transform group-hover:rotate-12 transition-transform">
-              <Leaf size={28} fill="currentColor" />
+      <header className="bg-white border-b border-[#E5E7EB] flex items-center justify-between px-4 lg:px-8 py-3 lg:py-4 sticky top-0 z-40">
+        <div className="flex items-center gap-4 lg:gap-12 flex-1 max-w-4xl">
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="lg:hidden p-2 text-slate-600 hover:text-slate-900"
+          >
+            <div className="flex flex-col gap-1.5 w-6 text-[#22C55E]">
+              <div className="h-0.5 w-full bg-current rounded-full"></div>
+              <div className="h-0.5 w-full bg-current rounded-full"></div>
+              <div className="h-0.5 w-full bg-current rounded-full"></div>
             </div>
-            <span className="text-2xl font-black tracking-tight text-slate-900 italic">Green-Sync</span>
+          </button>
+
+          <div className="flex items-center gap-2 lg:gap-3 shrink-0 group cursor-pointer" onClick={() => setActiveNav('Notices')}>
+            <div className="p-1.5 lg:p-2 bg-[#E8F5E9] rounded-xl lg:rounded-2xl text-[#22C55E] shadow-sm transform group-hover:rotate-12 transition-transform">
+              <Leaf size={24} fill="currentColor" className="lg:w-7 lg:h-7" />
+            </div>
+            <span className="text-lg lg:text-2xl font-black tracking-tight text-slate-900 italic">Green-Sync</span>
           </div>
-          <div className="relative flex-1 max-w-md hidden md:block">
+          <div className="relative flex-1 max-w-md hidden lg:block">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
             <input
               type="text"
@@ -146,7 +159,7 @@ export default function FacultyDashboard() {
             />
           </div>
         </div>
-        <nav className="flex items-center gap-8 relative">
+        <nav className="hidden lg:flex items-center gap-8 relative mr-8">
           {['Notices', 'Assignments'].map(nav => (
             <button
               key={nav}
@@ -160,9 +173,9 @@ export default function FacultyDashboard() {
             </button>
           ))}
         </nav>
-        <div className="flex items-center gap-4">
-          <button onClick={() => setShowLogoutModal(true)} className="flex items-center gap-2 px-4 py-2 bg-[#F8FAF9] text-slate-600 border border-[#E5E7EB] text-sm font-bold rounded-xl hover:bg-[#DCFCE7] hover:text-[#22C55E] hover:border-[#DCFCE7] transition-all duration-300">
-            <LogOut size={16} /> Log Out
+        <div className="flex items-center gap-3 lg:gap-4">
+          <button onClick={() => setShowLogoutModal(true)} className="flex items-center gap-2 px-3 lg:px-4 py-2 bg-[#F8FAF9] text-slate-600 border border-[#E5E7EB] text-xs lg:text-sm font-bold rounded-xl hover:bg-[#DCFCE7] hover:text-[#22C55E] hover:border-[#DCFCE7] transition-all duration-300">
+            <LogOut size={16} /> <span className="hidden sm:inline">Log Out</span>
           </button>
           <div className="relative">
             <div
@@ -200,6 +213,79 @@ export default function FacultyDashboard() {
         </div>
       </header>
 
+      {/* Mobile Drawer */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] lg:hidden"
+            />
+            <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed top-0 left-0 bottom-0 w-[280px] bg-white z-[101] lg:hidden shadow-2xl p-6 flex flex-col gap-8 overflow-y-auto styled-scrollbar"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="bg-[#E8F5E9] p-2 rounded-xl text-[#22C55E]">
+                    <Leaf size={24} fill="currentColor" />
+                  </div>
+                  <span className="text-xl font-black italic text-slate-900">Green-Sync</span>
+                </div>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2 text-slate-400"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                {[
+                  { id: 'Notices', label: 'Notices', icon: <Bell size={20} /> },
+                  { id: 'Assignments', label: 'Assignments', icon: <ClipboardList size={20} /> },
+                  { id: 'Students', label: 'Student List', icon: <Users size={20} /> },
+                  { id: 'Stats', label: 'Eco Stats', icon: <TreePine size={20} /> },
+                  { id: 'Settings', label: 'Settings', icon: <Settings size={20} /> }
+                ].map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      if (item.id === 'Notices' || item.id === 'Assignments') {
+                        setActiveNav(item.id);
+                      } else {
+                        handleShowToast(`${item.label} module coming soon`);
+                      }
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold transition-all ${activeNav === item.id
+                      ? 'bg-[#22C55E] text-white shadow-lg shadow-[#22C55E]/20'
+                      : 'text-slate-500 hover:bg-slate-50'}`}
+                  >
+                    {item.icon}
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-auto p-6 bg-[#F0FDF4] rounded-3xl border border-[#DCFCE7]">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Paper Saved</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-2xl font-black text-[#166534]">{stats.pages}</span>
+                  <FileText className="text-[#22C55E]" size={20} />
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
       {/* Conditional Content rendering */}
       <div className="flex-1 relative overflow-hidden">
         <AnimatePresence mode="wait">
@@ -210,7 +296,7 @@ export default function FacultyDashboard() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
-              className="flex-1 max-w-[1600px] w-full mx-auto p-8 flex flex-col gap-8 pb-12 overflow-y-auto h-full styled-scrollbar"
+              className="flex-1 max-w-[1600px] w-full mx-auto p-4 lg:p-8 flex flex-col gap-6 lg:gap-8 pb-12 overflow-y-auto h-full styled-scrollbar"
             >
               {/* Header Section */}
               <motion.div
@@ -224,31 +310,33 @@ export default function FacultyDashboard() {
                   <ChevronRight size={12} />
                   <span className="cursor-pointer hover:text-slate-600 transition-colors">Env Science 101</span>
                   <ChevronRight size={12} />
-                  <span className="text-slate-900">ASG 3: Urban Sustainability</span>
+                  <span className="text-slate-900 line-clamp-1">ASG 3: Urban Sustainability</span>
                 </div>
 
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                   <div className="max-w-3xl">
-                    <h1 className="text-4xl font-black text-slate-900 mb-2 tracking-tight">Assignment Management</h1>
-                    <p className="text-slate-500 font-medium">Manage submissions, grade papers, and track the environmental impact of digital submissions for "Introduction to Environmental Science".</p>
+                    <h1 className="text-2xl lg:text-4xl font-black text-slate-900 mb-1 lg:mb-2 tracking-tight">Assignment Management</h1>
+                    <p className="text-sm lg:text-base text-slate-500 font-medium leading-relaxed">Manage submissions, grade papers, and track the environmental impact of digital submissions for "Introduction to Environmental Science".</p>
                   </div>
-                  <div className="flex items-center gap-3 shrink-0 mt-2 md:mt-0">
+                  <div className="flex items-center gap-2 sm:gap-3 shrink-0 mt-2 md:mt-0">
                     <button
                       onClick={handleExport}
-                      className="flex items-center gap-2 px-6 py-3 bg-white border border-[#E5E7EB] text-slate-700 text-sm font-bold rounded-2xl hover:bg-slate-50 transition-all shadow-sm group">
-                      <Download size={18} className="group-hover:-translate-y-0.5 transition-transform" /> Export Report
+                      className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 lg:px-6 py-2.5 lg:py-3 bg-white border border-[#E5E7EB] text-slate-700 text-xs lg:text-sm font-bold rounded-2xl hover:bg-slate-50 transition-all shadow-sm group">
+                      <Download size={16} className="lg:w-[18px] lg:h-[18px] group-hover:-translate-y-0.5 transition-transform" /> <span className="hidden sm:inline">Export Report</span>
+                      <span className="sm:hidden">Export</span>
                     </button>
                     <button
                       onClick={() => setShowNewAssignmentModal(true)}
-                      className="flex items-center gap-2 px-6 py-3 bg-[#22C55E] hover:bg-[#16a34a] text-white text-sm font-black rounded-2xl transition-all shadow-lg shadow-[#22C55E]/20 group">
-                      <Plus size={18} className="group-hover:rotate-90 transition-transform" /> New Assignment
+                      className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 lg:px-6 py-2.5 lg:py-3 bg-[#22C55E] hover:bg-[#16a34a] text-white text-xs lg:text-sm font-black rounded-2xl transition-all shadow-lg shadow-[#22C55E]/20 group">
+                      <Plus size={16} className="lg:w-[18px] lg:h-[18px] group-hover:rotate-90 transition-transform" /> <span className="hidden sm:inline">New Assignment</span>
+                      <span className="sm:hidden">Create</span>
                     </button>
                   </div>
                 </div>
               </motion.div>
 
               {/* Stats Row */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
                 <StatCard icon={<FileText className="text-blue-500" />} title="Total Submissions" value={stats.total} suffix="Target: 50" progress={90} delay={0.1} />
                 <StatCard icon={<Clock className="text-amber-500" />} title="Pending Grading" value={stats.pending} badge="Urgent" delay={0.2} suffixColor="text-amber-600" />
                 <StatCard icon={<TreePine className="text-[#22C55E]" />} title="Paper Saved" value={stats.pages} suffix="sheets" progress={75} delay={0.3} />
@@ -261,7 +349,7 @@ export default function FacultyDashboard() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, delay: 0.3 }}
-                  className="xl:col-span-3 bg-white rounded-[2.5rem] border border-[#E5E7EB] flex flex-col shadow-sm overflow-hidden h-[calc(100vh-420px)] min-h-[500px]"
+                  className="xl:col-span-3 bg-white rounded-[2rem] lg:rounded-[2.5rem] border border-[#E5E7EB] flex flex-col shadow-sm overflow-hidden h-[400px] lg:h-[calc(100vh-420px)] lg:min-h-[500px]"
                 >
                   <div className="p-6 border-b border-slate-100 bg-white z-10 sticky top-0">
                     <div className="flex items-center justify-between mb-4">
@@ -320,56 +408,51 @@ export default function FacultyDashboard() {
                   initial={{ opacity: 0, scale: 0.98 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.4, delay: 0.4 }}
-                  className="xl:col-span-6 bg-white rounded-[2.5rem] border border-[#E5E7EB] shadow-sm flex flex-col h-[calc(100vh-420px)] min-h-[500px] overflow-hidden"
+                  className="xl:col-span-6 bg-white rounded-[2rem] lg:rounded-[2.5rem] border border-[#E5E7EB] shadow-sm flex flex-col h-[600px] lg:h-[calc(100vh-420px)] lg:min-h-[500px] overflow-hidden"
                 >
-                  <div className="px-8 py-4 border-b border-slate-100 flex items-center justify-between bg-white/50 backdrop-blur-sm sticky top-0 z-20">
-                    <div className="flex items-center gap-6">
-                      <div className="flex items-center gap-2">
-                        <button onClick={() => setZoom(prev => Math.max(50, prev - 10))} className="p-2 hover:bg-slate-50 rounded-xl transition-colors"><Scissors size={16} className="text-slate-400" /></button>
-                        <span className="text-xs font-black text-slate-900 tabular-nums w-10 text-center">{zoom}%</span>
-                        <button onClick={() => setZoom(prev => Math.min(200, prev + 10))} className="p-2 hover:bg-slate-50 rounded-xl transition-colors"><Maximize2 size={16} className="text-slate-400" /></button>
+                  <div className="px-4 lg:px-8 py-3 lg:py-4 border-b border-slate-100 flex items-center justify-between bg-white/50 backdrop-blur-sm sticky top-0 z-20">
+                    <div className="flex items-center gap-2 lg:gap-6">
+                      <div className="flex items-center gap-1 lg:gap-2">
+                        <button onClick={() => setZoom(prev => Math.max(50, prev - 10))} className="p-1.5 lg:p-2 hover:bg-slate-50 rounded-xl transition-colors"><Scissors size={14} className="lg:w-4 lg:h-4 text-slate-400" /></button>
+                        <span className="text-[10px] lg:text-xs font-black text-slate-900 tabular-nums w-8 lg:w-10 text-center">{zoom}%</span>
+                        <button onClick={() => setZoom(prev => Math.min(200, prev + 10))} className="p-1.5 lg:p-2 hover:bg-slate-50 rounded-xl transition-colors"><Maximize2 size={14} className="lg:w-4 lg:h-4 text-slate-400" /></button>
                       </div>
-                      <div className="w-px h-6 bg-slate-100" />
+                      <div className="w-px h-6 bg-slate-100 hidden sm:block" />
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => setIsHighlighting(!isHighlighting)}
-                          className={`p-2 rounded-xl transition-all flex items-center gap-2 px-3 ${isHighlighting ? 'bg-[#22C55E] text-white shadow-lg shadow-[#22C55E]/20' : 'hover:bg-slate-50 text-slate-400'}`}
+                          className={`p-1.5 lg:p-2 rounded-xl transition-all flex items-center gap-2 px-2 lg:px-3 ${isHighlighting ? 'bg-[#22C55E] text-white shadow-lg shadow-[#22C55E]/20' : 'hover:bg-slate-50 text-slate-400'}`}
                         >
-                          <Type size={16} />
-                          <span className="text-xs font-bold">Highlight</span>
+                          <Type size={14} className="lg:w-4 lg:h-4" />
+                          <span className="text-[10px] lg:text-xs font-bold hidden sm:inline">Highlight</span>
                         </button>
-                        <button className="p-2 hover:bg-slate-50 text-slate-400 rounded-xl transition-all flex items-center gap-2 px-3">
-                          <MessageSquare size={16} />
-                          <span className="text-xs font-bold">Comment</span>
+                        <button className="p-1.5 lg:p-2 hover:bg-slate-50 text-slate-400 rounded-xl transition-all flex items-center gap-2 px-2 lg:px-3">
+                          <MessageSquare size={14} className="lg:w-4 lg:h-4" />
+                          <span className="text-[10px] lg:text-xs font-bold hidden sm:inline">Comment</span>
                         </button>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Plus size={16} className="text-slate-300 cursor-pointer hover:text-slate-600" />
-                    </div>
                   </div>
 
-                  <div className="flex-1 overflow-y-auto p-12 bg-slate-50/50 flex justify-center styled-scrollbar">
+                  <div className="flex-1 overflow-y-auto p-4 lg:p-12 bg-slate-50/50 flex justify-center styled-scrollbar">
                     <motion.div
                       key={activeStudentId}
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="bg-white p-16 shadow-2xl rounded-sm w-full max-w-[800px] min-h-[1000px] h-fit relative transform-gpu origin-top"
+                      className="bg-white p-6 lg:p-16 shadow-2xl rounded-sm w-full max-w-[800px] min-h-[1000px] h-fit relative transform-gpu origin-top"
                       style={{ scale: zoom / 100 }}
                     >
-                      <div className="mb-12 border-b border-slate-100 pb-8">
-                        <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">Urban Sustainability & Green Spaces</h2>
-                        <div className="flex items-center gap-3 text-sm text-slate-500 font-bold">
+                      <div className="mb-8 lg:mb-12 border-b border-slate-100 pb-6 lg:pb-8">
+                        <h2 className="text-xl lg:text-3xl font-black text-slate-900 mb-4 tracking-tight">Urban Sustainability & Green Spaces</h2>
+                        <div className="flex items-center gap-3 text-xs lg:text-sm text-slate-500 font-bold">
                           <div className="w-6 h-6 rounded-full overflow-hidden bg-slate-100">
                             <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${activeStudent.name}`} alt="sc" />
                           </div>
                           <span>{activeStudent.name}</span>
-                          <span className="text-slate-300">•</span>
-                          <span>ENV-101 Section B</span>
                         </div>
                       </div>
 
-                      <div className="space-y-6 text-slate-700 leading-relaxed text-lg font-medium selection:bg-[#DCFCE7] selection:text-[#166534]">
+                      <div className="space-y-4 lg:space-y-6 text-slate-700 leading-relaxed text-base lg:text-lg font-medium selection:bg-[#DCFCE7] selection:text-[#166534]">
                         <p className="hover:text-slate-900 transition-colors cursor-text">Building sustainable urban environments requires a multi-faceted approach to resource management and community engagement. Traditional urban planning often neglects the critical role that biodiversified green corridors play in mitigating the "urban heat island" effect.</p>
 
                         <p className={`hover:text-slate-900 transition-colors cursor-text ${hasHighlight ? "bg-yellow-100/60 rounded px-1 transition-colors border-l-4 border-yellow-400 -ml-1 pl-2" : ""}`}>
@@ -380,13 +463,13 @@ export default function FacultyDashboard() {
 
                         <motion.div
                           whileHover={{ scale: 1.01 }}
-                          className="my-8 p-6 bg-slate-50 cursor-pointer rounded-2xl border border-slate-100 flex items-center justify-between hover:shadow-md hover:border-[#22C55E]/30 transition-all group"
+                          className="my-6 lg:my-8 p-4 lg:p-6 bg-slate-50 cursor-pointer rounded-2xl border border-slate-100 flex items-center justify-between hover:shadow-md hover:border-[#22C55E]/30 transition-all group"
                         >
                           <div className="flex items-center gap-3">
-                            <div className="p-2 bg-white rounded-xl shadow-sm group-hover:scale-110 transition-transform"><FileText size={20} className="text-[#22C55E]" /></div>
+                            <div className="p-2 bg-white rounded-xl shadow-sm group-hover:scale-110 transition-transform"><FileText size={18} className="lg:w-5 lg:h-5 text-[#22C55E]" /></div>
                             <div>
-                              <p className="text-xs font-black text-slate-900 group-hover:text-[#22C55E] transition-colors">dataset_urban_emissions.csv</p>
-                              <p className="text-[10px] text-slate-400 font-bold">Attached Analysis Target</p>
+                              <p className="text-[10px] lg:text-xs font-black text-slate-900 group-hover:text-[#22C55E] transition-colors">dataset_urban_emissions.csv</p>
+                              <p className="text-[9px] lg:text-[10px] text-slate-400 font-bold">Attached Analysis Target</p>
                             </div>
                           </div>
                           <button
@@ -394,7 +477,7 @@ export default function FacultyDashboard() {
                               e.stopPropagation();
                               window.open('https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', '_blank');
                             }}
-                            className="text-xs font-black text-slate-400 hover:text-[#22C55E] transition-colors uppercase tracking-widest"
+                            className="text-[9px] lg:text-xs font-black text-slate-400 hover:text-[#22C55E] transition-colors uppercase tracking-widest"
                           >
                             View Data
                           </button>
@@ -411,7 +494,7 @@ export default function FacultyDashboard() {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, delay: 0.5 }}
-                  className="xl:col-span-3 space-y-8 h-[calc(100vh-420px)] min-h-[500px] overflow-y-auto styled-scrollbar pr-2"
+                  className="xl:col-span-3 space-y-6 lg:space-y-8 h-auto lg:h-[calc(100vh-420px)] lg:min-h-[500px] lg:overflow-y-auto lg:styled-scrollbar pr-0 lg:pr-2"
                 >
                   <div className="bg-white rounded-[2.5rem] border border-[#E5E7EB] shadow-sm p-8">
                     <div className="flex items-center justify-between mb-8">

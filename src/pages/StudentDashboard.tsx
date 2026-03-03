@@ -1413,20 +1413,33 @@ export default function StudentDashboard() {
   }, [notices, assignments, readNotifications]);
 
   const unreadCount = siteNotifications.filter(n => n.isUnread).length;
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className={`min-h-screen transition-all duration-500 font-sans ${t.bg} ${t.text}`}>
+    <div className={`min-h-screen transition-all duration-500 font-sans ${t.bg} ${t.text} overflow-x-hidden pb-20 lg:pb-0`}>
       {/* Top Navigation Bar */}
-      <header className={`sticky top-0 z-50 ${t.header} border-b px-8 py-4 flex items-center justify-between shadow-sm transition-all duration-500`}>
-        <div className="flex items-center gap-12">
-          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setActiveTab('dashboard')}>
-            <div className="bg-primary p-2.5 rounded-2xl shadow-lg transform group-hover:rotate-12 transition-transform">
-              <Leaf size={28} className="text-white" />
+      <header className={`sticky top-0 z-50 ${t.header} border-b px-4 lg:px-8 py-3 lg:py-4 flex items-center justify-between shadow-sm transition-all duration-500`}>
+        <div className="flex items-center gap-4 lg:gap-12">
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="lg:hidden p-2 text-slate-600 hover:text-slate-900"
+          >
+            <div className="flex flex-col gap-1.5 w-6">
+              <div className="h-0.5 w-full bg-current rounded-full"></div>
+              <div className="h-0.5 w-full bg-current rounded-full"></div>
+              <div className="h-0.5 w-full bg-current rounded-full"></div>
             </div>
-            <span className={`text-2xl font-black tracking-tight ${t.heading} italic transition-colors`}>Green-Sync</span>
+          </button>
+
+          <div className="flex items-center gap-2 lg:gap-3 cursor-pointer group" onClick={() => setActiveTab('dashboard')}>
+            <div className="bg-primary p-2 rounded-xl lg:p-2.5 lg:rounded-2xl shadow-lg transform group-hover:rotate-12 transition-transform">
+              <Leaf size={24} className="text-white lg:w-7 lg:h-7" />
+            </div>
+            <span className={`text-xl lg:text-2xl font-black tracking-tight ${t.heading} italic transition-colors`}>Green-Sync</span>
           </div>
 
-          <div className="relative w-80 hidden lg:block">
+          <div className="relative w-64 xl:w-80 hidden lg:block">
             <Search className={`absolute left-4 top-1/2 -translate-y-1/2 ${t.muted} w-4 h-4 transition-colors`} />
             <input
               type="text"
@@ -1438,7 +1451,7 @@ export default function StudentDashboard() {
           </div>
         </div>
 
-        <nav className="flex items-center gap-6 lg:gap-8">
+        <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
           {['dashboard', 'courses', 'papers', 'notes', 'assignment-submission', 'eco-tracker', 'settings'].map((tab) => {
             const labels: Record<string, string> = {
               'dashboard': 'Dashboard',
@@ -1467,7 +1480,7 @@ export default function StudentDashboard() {
           })}
         </nav>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3 lg:gap-6">
           <button
             onClick={() => {
               const pending = [...assignments]
@@ -1497,10 +1510,10 @@ export default function StudentDashboard() {
                 alert("You have no pending assignments! Great job.");
               }
             }}
-            className="flex items-center gap-2 bg-[#22C55E] text-white px-5 py-2.5 rounded-full font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-[#22C55E]/30 group"
+            className="flex items-center gap-2 bg-[#22C55E] text-white px-4 lg:px-5 py-2 lg:py-2.5 rounded-full font-bold text-xs lg:text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-[#22C55E]/30 group"
           >
             <Upload size={16} className="group-hover:-translate-y-0.5 transition-transform" />
-            Quick Upload
+            <span className="hidden sm:inline">Quick Upload</span>
           </button>
           <div className="flex items-center gap-3">
             <button
@@ -1528,7 +1541,78 @@ export default function StudentDashboard() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto p-8">
+      {/* Mobile Drawer */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] lg:hidden"
+            />
+            <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className={`fixed top-0 left-0 bottom-0 w-[280px] ${t.sidebar} z-[101] lg:hidden shadow-2xl p-6 flex flex-col gap-8 overflow-y-auto styled-scrollbar`}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary p-2 rounded-xl">
+                    <Leaf size={24} className="text-white" />
+                  </div>
+                  <span className={`text-xl font-black italic ${t.heading}`}>Green-Sync</span>
+                </div>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`p-2 ${t.muted}`}
+                >
+                  <X size={24} />
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                {[
+                  { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
+                  { id: 'courses', label: 'My Courses', icon: <BookOpen size={20} /> },
+                  { id: 'papers', label: 'Question Papers', icon: <FileQuestion size={20} /> },
+                  { id: 'notes', label: 'Student Notes', icon: <FileText size={20} /> },
+                  { id: 'assignment-submission', label: 'Assignments', icon: <Upload size={20} /> },
+                  { id: 'eco-tracker', label: 'Eco Tracker', icon: <TreePine size={20} /> },
+                  { id: 'settings', label: 'Settings', icon: <Settings size={20} /> }
+                ].map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      setActiveTab(item.id as Tab);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold transition-all ${activeTab === item.id
+                      ? 'bg-primary text-white shadow-lg shadow-primary/20'
+                      : t.navInactive}`}
+                  >
+                    {item.icon}
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className={`mt-auto p-6 ${t.accentBg} rounded-3xl border ${t.border}`}>
+                <p className={`text-[10px] font-black ${t.muted} uppercase tracking-widest mb-2`}>Eco Rank</p>
+                <div className="flex items-center justify-between">
+                  <span className={`text-2xl font-black ${t.heading}`}>#12</span>
+                  <Trophy className="text-primary" size={20} />
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      <main className="max-w-7xl mx-auto p-4 lg:p-8">
         <AnimatePresence mode="wait">
           {activeTab === 'dashboard' && (
             <motion.div
@@ -3280,7 +3364,7 @@ export default function StudentDashboard() {
                                   }))
                                 };
 
-                                const pool = (topicsData as any)[topic] || topicsData['default'];
+                                const pool = (topicsData as any)[topic as string] || topicsData['default'];
                                 const shuffledPool = shuffle(pool).slice(0, 20);
 
                                 const finalQuestions = shuffledPool.map((item, idx) => ({
@@ -4027,6 +4111,27 @@ export default function StudentDashboard() {
           </motion.div>
         )}
       </AnimatePresence>
+      {/* Mobile Bottom Navigation */}
+      <div className={`lg:hidden fixed bottom-6 left-4 right-4 z-[90] ${t.header} border ${t.border} rounded-full shadow-2xl p-2 flex items-center justify-around backdrop-blur-md`}>
+        {[
+          { id: 'dashboard', icon: <LayoutDashboard size={22} />, label: 'Home' },
+          { id: 'courses', icon: <BookOpen size={22} />, label: 'Study' },
+          { id: 'assignment-submission', icon: <Upload size={22} />, label: 'Submit' },
+          { id: 'eco-tracker', icon: <TreePine size={22} />, label: 'Eco' },
+          { id: 'settings', icon: <Settings size={22} />, label: 'Profile' }
+        ].map((item) => (
+          <button
+            key={item.id}
+            onClick={() => setActiveTab(item.id as Tab)}
+            className={`flex flex-col items-center justify-center w-12 h-12 rounded-full transition-all ${activeTab === item.id
+              ? 'bg-primary text-white shadow-lg shadow-primary/20'
+              : t.muted + ' hover:bg-black/5'
+              }`}
+          >
+            {item.icon}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
