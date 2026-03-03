@@ -177,14 +177,14 @@ export default function LoginPage() {
             >
               <div className="mb-6">
                 <h1 className="text-3xl font-black text-slate-900 mb-2">
-                  {view === 'login' ? 'Welcome Back' : view === 'forgot-password' ? 'Reset Password' : 'Join Green-Sync'}
+                  {view === 'login' ? 'Welcome Back' : view === 'forgot-password' ? 'Reset Password' : 'Create Account'}
                 </h1>
                 <p className="text-sm text-slate-500 leading-relaxed">
                   {view === 'login'
                     ? 'Enter your campus credentials to access your sustainable dashboard.'
                     : view === 'forgot-password'
                       ? 'Enter your registered email to receive a password recovery link.'
-                      : 'Provide your details to request a new account. Admin verification is required.'}
+                      : 'Provide your details to set up your new Green-Sync account instantly.'}
                 </p>
               </div>
 
@@ -245,17 +245,19 @@ export default function LoginPage() {
                   </div>
                 </div>
 
-                {view === 'login' && (
+                {(view === 'login' || view === 'signup') && (
                   <div className="space-y-1">
                     <div className="flex justify-between items-center ml-1">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Password</label>
-                      <button
-                        type="button"
-                        onClick={() => setView('forgot-password')}
-                        className="text-[10px] font-bold text-primary hover:underline"
-                      >
-                        Forgot Password?
-                      </button>
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{view === 'signup' ? 'Create Password' : 'Password'}</label>
+                      {view === 'login' && (
+                        <button
+                          type="button"
+                          onClick={() => setView('forgot-password')}
+                          className="text-[10px] font-bold text-primary hover:underline"
+                        >
+                          Forgot Password?
+                        </button>
+                      )}
                     </div>
                     <div className="relative group">
                       <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 transition-colors group-focus-within:text-primary" />
@@ -385,7 +387,7 @@ export default function LoginPage() {
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
                     <>
-                      {view === 'login' ? 'Sign In to Dashboard' : view === 'forgot-password' ? 'Send Reset Link' : 'Submit Access Request'}
+                      {view === 'login' ? 'Sign In to Dashboard' : view === 'forgot-password' ? 'Send Reset Link' : 'Create Account Now'}
                       {view === 'login' ? <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" /> : <Send className="w-4 h-4" />}
                     </>
                   )}
@@ -396,7 +398,7 @@ export default function LoginPage() {
                 {view === 'login' ? (
                   <p className="text-xs text-slate-400 font-medium">
                     Don't have an account?{' '}
-                    <button onClick={() => setView('signup')} className="text-primary font-bold hover:underline">Request Access</button>
+                    <button onClick={() => setView('signup')} className="text-primary font-bold hover:underline">Create Account</button>
                   </p>
                 ) : (
                   <button
