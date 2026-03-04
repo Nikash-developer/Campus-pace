@@ -1085,13 +1085,13 @@ export default function StudentDashboard() {
         setActiveQuizQuestions(data.questions);
         setQuizScore(0);
         setCurrentQuizIndex(0);
-        setUserAnswers(new Array(20).fill(null));
+        setUserAnswers(new Array(data.questions.length).fill(null));
       } else {
         throw new Error(data.error || "Failed to generate quiz");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Quiz Generation Error:", error);
-      alert("Failed to generate AI quiz. Please try again.");
+      alert(error.message || "Failed to generate AI quiz. Please try again.");
       setActiveQuizPhase('topic');
     } finally {
       setIsGeneratingQuiz(false);
