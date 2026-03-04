@@ -2,7 +2,7 @@
 let app: any;
 
 try {
-    const serverModule = await import('../server.ts');
+    const serverModule = await import('../app_server.ts');
     app = serverModule.default;
 } catch (err) {
     console.error("FATAL: Failed to import server module:", err);
