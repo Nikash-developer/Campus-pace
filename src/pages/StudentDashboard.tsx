@@ -3586,7 +3586,7 @@ export default function StudentDashboard() {
                             </div>
                             <div className="text-right">
                               <p className={`text-[10px] font-black ${t.muted} uppercase tracking-widest`}>Question PROGRESS</p>
-                              <h4 className={`text-xl font-black text-primary`}>{currentQuizIndex + 1} / 20</h4>
+                              <h4 className={`text-xl font-black text-primary`}>{currentQuizIndex + 1} / {activeQuizQuestions.length}</h4>
                             </div>
                           </div>
 
@@ -3594,7 +3594,7 @@ export default function StudentDashboard() {
                           <div className={`h-2 ${t.search} rounded-full overflow-hidden`}>
                             <motion.div
                               initial={{ width: 0 }}
-                              animate={{ width: `${((currentQuizIndex + 1) / 20) * 100}%` }}
+                              animate={{ width: `${((currentQuizIndex + 1) / activeQuizQuestions.length) * 100}%` }}
                               className="h-full bg-primary"
                             />
                           </div>
@@ -3642,7 +3642,7 @@ export default function StudentDashboard() {
                               }
 
                               setTimeout(() => {
-                                if (currentQuizIndex < 19) {
+                                if (currentQuizIndex < activeQuizQuestions.length - 1) {
                                   setCurrentQuizIndex(prev => prev + 1);
                                   setSelectedQuizAnswer(null);
                                   setIsAnswerChecking(false);
@@ -3654,7 +3654,7 @@ export default function StudentDashboard() {
                             }}
                             className="w-full py-5 bg-slate-900 text-white rounded-[2rem] font-black hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/20 disabled:opacity-50 flex items-center justify-center gap-3"
                           >
-                            {currentQuizIndex < 19 ? 'Next Question' : 'Finish Quiz'}
+                            {currentQuizIndex < activeQuizQuestions.length - 1 ? 'Next Question' : 'Finish Quiz'}
                             <ChevronRight size={20} />
                           </button>
                         </>
@@ -3680,11 +3680,11 @@ export default function StudentDashboard() {
                       <div className="flex justify-center gap-12">
                         <div className="space-y-1">
                           <p className={`text-[10px] font-black ${t.muted} uppercase tracking-widest`}>Final Score</p>
-                          <p className={`text-4xl font-black ${t.heading}`}>{quizScore} <span className="text-xl text-slate-400">/ 20</span></p>
+                          <p className={`text-4xl font-black ${t.heading}`}>{quizScore} <span className="text-xl text-slate-400">/ {activeQuizQuestions.length}</span></p>
                         </div>
                         <div className="space-y-1">
                           <p className={`text-[10px] font-black ${t.muted} uppercase tracking-widest`}>Accuracy</p>
-                          <p className={`text-4xl font-black text-primary`}>{(quizScore / 20) * 100}%</p>
+                          <p className={`text-4xl font-black text-primary`}>{Math.round((quizScore / activeQuizQuestions.length) * 100)}%</p>
                         </div>
                       </div>
 

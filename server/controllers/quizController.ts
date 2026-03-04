@@ -3,10 +3,17 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Unified Google Gen AI SDK initialization
-const genAI = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY || ""
-});
+// Initialize genAI outside the handler to take advantage of warm starts
+let genAI: any = null;
+try {
+    if (process.env.GEMINI_API_KEY) {
+        genAI = new GoogleGenAI({
+            apiKey: process.env.GEMINI_API_KEY
+        });
+    }
+} catch (err) {
+    console.error("Failed to initialize GoogleGenAI:", err);
+}
 
 export const generateQuiz = async (req: any, res: any) => {
     try {
@@ -16,25 +23,27 @@ export const generateQuiz = async (req: any, res: any) => {
             return res.status(400).json({ error: "Topic is required" });
         }
 
-        if (!process.env.GEMINI_API_KEY) {
-            console.error("GEMINI_API_KEY is missing from environment variables");
-            return res.status(500).json({ error: "AI service configuration error (API Key missing)." });
+        if (!genAI) {
+            console.error("GEMINI_API_KEY is missing or genAI failed to initialize");
+            return res.status(500).json({ error: "AI service configuration error. Please check GEMINI_API_KEY in Vercel settings." });
         }
 
-        const prompt = `Generate exactly 15 challenging academic multiple-choice questions for a university student on the topic: "${topic}". 
-Follow the engineering exam style of Mumbai University.
-Return ONLY a JSON array of objects with this structure:
+        // Reduced to 10 questions for extreme performance safety on Vercel free tier
+        const prompt = `Generate exactly 10 multiple-choice questions for: "${topic}".
+Style: Engineering/University level.
+Format: JSON array ONLY.
+Structure:
 {
   "question": "string",
-  "options": ["string", "string", "string", "string"],
-  "correctAnswer": number (0-3),
-  "explanation": "educational string"
+  "options": ["str", "str", "str", "str"],
+  "correctAnswer": 0-3,
+  "explanation": "short string"
 }`;
 
-        console.log(`Starting quiz generation for topic: ${topic}`);
+        console.log(`Requesting 10 questions for topic: ${topic}`);
 
-        // Using the new @google/genai SDK syntax
-        const result = await genAI.models.generateContent({
+        // Set a timeout for the AI call itself
+        const aiPromise = genAI.models.generateContent({
             model: "gemini-1.5-flash",
             contents: [{ role: "user", parts: [{ text: prompt }] }],
             config: {
@@ -42,34 +51,31 @@ Return ONLY a JSON array of objects with this structure:
             }
         });
 
-        console.log("AI Response received");
+        // Race against a timeout to provide a better error than Vercel's 500
+        const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("AI generation timed out (10s limit)")), 9500)
+        );
+
+        const result: any = await Promise.race([aiPromise, timeoutPromise]);
 
         let text = result.text || "";
 
-        // Fallback checks for different SDK response shapes
+        // Comprehensive fallback for different SDK response shapes
         if (!text && result.candidates?.[0]?.content?.parts?.[0]?.text) {
-            console.log("Falling back to candidates access");
             text = result.candidates[0].content.parts[0].text;
         }
 
         if (!text) {
-            console.log("Empty response structure:", JSON.stringify(result, null, 2));
-            throw new Error("Empty response from AI - check API key and safety settings");
+            throw new Error("Empty response from AI");
         }
-
-        console.log("Raw text result prefix:", text.slice(0, 100));
 
         // Robust parsing
         let questions;
         try {
             questions = JSON.parse(text);
-            console.log("JSON parsed successfully, count:", Array.isArray(questions) ? questions.length : "not an array");
         } catch (parseErr) {
-            console.error("JSON Parse Error. Full Raw Text length:", text.length);
-            // Fallback: try to extract JSON from markdown if AI failed to respect mimeType
             const jsonMatch = text.match(/\[[\s\S]*\]/);
             if (jsonMatch) {
-                console.log("Found JSON array via regex fallback");
                 questions = JSON.parse(jsonMatch[0]);
             } else {
                 throw new Error("Failed to parse AI response into JSON array");
@@ -80,26 +86,21 @@ Return ONLY a JSON array of objects with this structure:
             throw new Error("Invalid response format: an array was expected.");
         }
 
-        // Add IDs and ensure we have enough questions
+        // Add IDs
         const questionsWithIds = questions.map((q, idx) => ({
             ...q,
             id: idx + 1
         }));
 
-        console.log("Sending response to client");
         res.json({ questions: questionsWithIds });
     } catch (err: any) {
         console.error("Quiz Generation Error Details:", err);
-        let errorMessage = "AI service error. Please try again.";
 
-        if (err.message) {
-            errorMessage = err.message;
-        }
-
-        if (errorMessage.includes("API_KEY") || errorMessage.includes("API key")) {
-            errorMessage = "AI Authentication failed. Please check backend API Key configuration.";
-        }
-
-        res.status(500).json({ error: errorMessage });
+        // Return clear errors to the client
+        const status = err.message?.includes("timed out") ? 504 : 500;
+        res.status(status).json({
+            error: err.message || "AI service error",
+            details: process.env.NODE_ENV === "development" ? err.stack : undefined
+        });
     }
 };
