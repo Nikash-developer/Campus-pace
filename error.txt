@@ -1,0 +1,43 @@
+﻿[dotenv@17.3.1] injecting env (4) from .env -- tip: ΓÜÖ∩╕Å  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ≡ƒöÉ encrypt with Dotenvx: https://dotenvx.com
+node.exe : E:\Nikash\GreenSync
+\Green-SYnc\server.ts:24
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo          : 
+    NotSpecified: (E:\Nikash  
+  \Green...nc\server.ts:24:   
+ String) [], RemoteExcepti    
+on
+    + FullyQualifiedErrorId : 
+    NativeCommandError
+ 
+const dns = 
+require("node:dns/promises");
+            ^
+
+ReferenceError: require is 
+not defined in ES module 
+scope, you can use import 
+instead
+    at <anonymous> (E:\Nikash\
+GreenSync\Green-SYnc\server.ts
+:24:13)
+    at ModuleJob.run (node:int
+ernal/modules/esm/module_job:3
+77:25)
+    at async onImport.tracePro
+mise.__proto__ (node:internal/
+modules/esm/loader:671:26)
+    at async asyncRunEntryPoin
+tWithESMLoader (node:internal/
+modules/run_main:101:5)
+
+Node.js v24.11.1
+
