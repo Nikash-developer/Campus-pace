@@ -18,7 +18,7 @@ export const createAssignment = async (req: any, res: any) => {
 
         const io = req.app.get('io');
         if (io) {
-            io.to('student').emit('new_assignment', assignment);
+            io.emit('new_assignment', assignment);
         }
 
         res.status(201).json(assignment);
