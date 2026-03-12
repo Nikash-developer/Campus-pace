@@ -19,8 +19,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const token = authHeader.split(' ')[1];
         try {
             jwt.verify(token, process.env.JWT_SECRET || 'secret');
-        } catch {
-            return res.status(401).json({ error: 'Not authorized, token failed' });
+        } catch (jwtErr: any) {
+            const reason = jwtErr.name === 'TokenExpiredError' 
+                ? 'Token expired. Please log out and log in again.' 
+                : jwtErr.name === 'JsonWebTokenError'
+                    ? 'Invalid token signature. Check JWT_SECRET in Vercel env vars.'
+                    : 'Token verification failed';
+            return res.status(401).json({ error: reason });
         }
 
         const { topic } = req.body;
