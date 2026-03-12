@@ -21,10 +21,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         try {
             jwt.verify(token, process.env.JWT_SECRET || 'secret');
         } catch (jwtErr: any) {
+            const secretLength = process.env.JWT_SECRET ? process.env.JWT_SECRET.length : 0;
+            const secretPrefix = process.env.JWT_SECRET ? process.env.JWT_SECRET.substring(0, 3) : 'NONE';
             const reason = jwtErr.name === 'TokenExpiredError' 
                 ? 'Token expired. Please log out and log in again.' 
                 : jwtErr.name === 'JsonWebTokenError'
-                    ? 'Invalid token signature. Check JWT_SECRET in Vercel env vars.'
+                    ? `Invalid token signature. Server sees secret starting with "${secretPrefix}" (length: ${secretLength}).`
                     : 'Token verification failed';
             return res.status(401).json({ error: reason });
         }
