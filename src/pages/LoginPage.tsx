@@ -139,6 +139,9 @@ export default function LoginPage() {
     setError('');
 
     try {
+      // Save the selected role before changing pages!
+      localStorage.setItem('pending_role', role);
+      
       const { data, error: socialError } = await supabase.auth.signInWithOAuth({
         provider: providerType,
         options: {

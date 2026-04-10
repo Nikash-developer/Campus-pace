@@ -4062,39 +4062,42 @@ export default function StudentDashboard() {
       {/* Modals & Toasts */}
       <AnimatePresence>
         {showLogoutConfirm && (
-          <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowLogoutConfirm(false)}
-              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+              className="absolute inset-0 bg-slate-900/80 backdrop-blur-md"
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className={`relative ${t.card} w-full max-w-sm rounded-[3rem] p-8 text-center space-y-6 shadow-2xl border ${t.border}`}
+              className={`relative ${t.card} w-full max-w-sm rounded-[3rem] p-10 text-center space-y-8 shadow-2xl border ${t.border}`}
             >
-              <div className="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                <AlertCircle size={40} />
+              <div className="w-24 h-24 bg-red-50 text-red-500 rounded-[2rem] flex items-center justify-center mx-auto mb-2 shadow-inner">
+                <AlertCircle size={48} />
               </div>
-              <div>
-                <h3 className={`text-2xl font-black ${t.heading}`}>Sign Out?</h3>
-                <p className={`${t.muted} font-medium mt-2`}>Are you sure you want to sign out? You will need to login again.</p>
+              <div className="space-y-2">
+                <h3 className={`text-3xl font-black ${t.heading}`}>Sign Out?</h3>
+                <p className={`${t.muted} font-medium text-sm leading-relaxed`}>Are you sure you want to end your session? Your progress will be saved.</p>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4 pt-2">
                 <button
                   onClick={() => setShowLogoutConfirm(false)}
-                  className={`py-4 rounded-2xl font-black ${t.muted} hover:${t.search} transition-colors border ${t.border}`}
+                  className={`py-4 rounded-2xl font-black ${t.muted} bg-slate-50 hover:bg-slate-100 transition-all border ${t.border}`}
                 >
-                  Cancel
+                  Go Back
                 </button>
                 <button
-                  onClick={logout}
-                  className="py-4 bg-red-600 text-white rounded-2xl font-black hover:bg-red-700 transition-all shadow-xl shadow-red-600/20"
+                  onClick={() => {
+                    setShowLogoutConfirm(false);
+                    logout();
+                  }}
+                  className="py-4 bg-red-600 text-white rounded-2xl font-black hover:bg-red-700 transition-all shadow-xl shadow-red-600/30 active:scale-95"
                 >
-                  Sign Out
+                  Yes, Sign Out
                 </button>
               </div>
             </motion.div>
