@@ -12,7 +12,14 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    try {
+      const saved = localStorage.getItem('gs_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -39,13 +46,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             } as User);
           } else {
             // If doc doesn't exist yet, we still set basic user info
-            setUser({
+            const fallbackRole = session.user.user_metadata?.role || 'student';
+            const fallbackUser = {
               id: session.user.id,
               email: session.user.email || '',
               name: session.user.user_metadata?.full_name || 'New User',
-              role: 'student',
+              role: fallbackRole,
               department: ''
-            } as User);
+            } as User;
+            setUser(fallbackUser);
+            localStorage.setItem('gs_user', JSON.stringify(fallbackUser));
           }
         } catch (error) {
           console.error("Error fetching user profile:", error);

@@ -71,7 +71,10 @@ export default function LoginPage() {
           else if (userData.role === 'admin') navigate('/admin');
           else navigate('/faculty');
         } else {
-          navigate('/student');
+          const fallbackRole = user.user_metadata?.role || 'student';
+          if (fallbackRole === 'admin') navigate('/admin');
+          else if (fallbackRole === 'faculty' || fallbackRole === 'hod') navigate('/faculty');
+          else navigate('/student');
         }
       } else if (view === 'forgot-password') {
         const { error: resetError } = await supabase.auth.resetPasswordForEmail(email);
