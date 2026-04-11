@@ -42,6 +42,8 @@ export default function LoginPage() {
       setConfigError('Supabase credentials missing. Sign-in features will not work until you add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your Vercel Environment Variables.');
     }
   }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
