@@ -68,25 +68,22 @@ export const uploadFile = async (req: any, res: any) => {
         const eco_update = calculateImpact(pageCount);
         const plagiarism_score = Math.floor(Math.random() * 8) + 2;
 
-        // File system preservation
-        const uploadsDir = path.join(process.cwd(), 'uploads');
-        if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
-
-        const fileName = `sub_${Date.now()}_${file.originalname}`;
-        const filePath = path.join(uploadsDir, fileName);
-        fs.writeFileSync(filePath, file.buffer);
-        const file_url = `/uploads/${fileName}`;
-
-        // Update MongoDB (Primary developer DB)
-        await Submission.create({
+        // SAVE TO MONGODB (Stateless storage)
+        const submission = await Submission.create({
             student_id: targetUser?._id || req.user?._id,
             assignment_id: assignment_id,
-            file_url: file_url,
+            file_data: file.buffer,
+            content_type: file.mimetype,
+            file_url: `/api/submissions/download/${new mongoose.Types.ObjectId()}`, // Placeholder for legacy URLs
             page_count: pageCount,
             plagiarism_score: plagiarism_score,
             status: "Submitted",
             eco_impact: eco_update
         });
+
+        // Update the URL to the real database download link
+        const real_url = `/api/submissions/download/${submission._id}`;
+        await Submission.findByIdAndUpdate(submission._id, { file_url: real_url });
 
         // Update local MongoDB user stats for the IDENTIFIED user
         if (targetUser) {
@@ -102,14 +99,11 @@ export const uploadFile = async (req: any, res: any) => {
             console.log(`[Eco-Sync] Successfully updated impact data.`);
         }
 
-        // NOTE: We no longer update Supabase from the backend to avoid RLS Error 42501.
-        // The frontend will perform this sync using the user's own token.
-
         res.status(200).json({
-            message: 'Impact calculated. Frontend sync required.',
+            message: 'Impact calculated and saved to database.',
             eco_update,
             plagiarism_score,
-            file_url
+            file_url: real_url
         });
 
     } catch (error: any) {
