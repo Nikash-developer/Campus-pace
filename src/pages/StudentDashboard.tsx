@@ -1439,6 +1439,11 @@ export default function StudentDashboard() {
         return;
       }
 
+      if (assignment.uploadedFile.size > 3.8 * 1024 * 1024) {
+        alert("This file is too large for the Vercel 4.5MB limit. Please compress your PDF below 3.8MB and try again via the sidebar.");
+        return;
+      }
+
       try {
         const formData = new FormData();
         formData.append('file', assignment.uploadedFile);
@@ -1458,7 +1463,14 @@ export default function StudentDashboard() {
         });
 
         if (res.ok) {
-          const result = await res.json();
+          // ULTIMATE JSON SHIELD: Catching errors even on successful HTTP status
+          let result;
+          try {
+            result = await res.json();
+          } catch (jsonErr) {
+            console.error("Dashboard Success JSON Parse Error:", jsonErr);
+            throw new Error("Server confirmed upload but sent an invalid response. Refresh to see your status.");
+          }
           
           // Parallel update of Eco History
           const newEntry = {
@@ -1496,7 +1508,19 @@ export default function StudentDashboard() {
           // For now, we'll suggest the user that their impact has been recorded
           console.log("Assignment uploaded and eco-impact recorded:", result.eco_impact);
         } else {
-          const errorData = await res.json();
+          if (res.status === 413) {
+            throw new Error('File is too large for the server. Vercel limit is 4.5MB total. Please compress your PDF below 3.8MB.');
+          }
+          
+          let errorData;
+          const contentType = res.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+            errorData = await res.json();
+          } else {
+            console.warn("Non-JSON error in dashboard:", await res.text());
+            errorData = { error: 'Server returned a non-JSON error. The file might be too large or the server timed out.' };
+          }
+          
           alert(`Submission failed: ${errorData.error || 'Server error'}`);
         }
       } catch (error: any) {
