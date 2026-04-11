@@ -209,7 +209,14 @@ export const AssignmentSubmissionView: React.FC<AssignmentSubmissionViewProps> =
                 throw new Error(errorData.error || 'Upload failed');
             }
 
-            const result = await res.json();
+            // ULTIMATE JSON SHIELD: Catching errors even on successful HTTP status
+            let result;
+            try {
+                result = await res.json();
+            } catch (jsonErr) {
+                console.error("JSON Parse Error on Success Path:", jsonErr);
+                throw new Error("Server confirmed upload but sent an invalid response format. Please refresh and check if your assignment is visible.");
+            }
             setUploadProgress(100);
             setUploadStatus('success');
 

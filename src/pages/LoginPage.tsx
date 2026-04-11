@@ -598,6 +598,9 @@ export default function LoginPage() {
 
           <div className="absolute top-10 right-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl" />
           <div className="absolute bottom-10 left-10 w-48 h-48 bg-primary/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-4 right-6 text-[9px] font-black text-slate-500/30 uppercase tracking-[0.3em] select-none pointer-events-none">
+            v1.5.0-DeploymentFix
+          </div>
         </div>
       </motion.div>
     </div>
