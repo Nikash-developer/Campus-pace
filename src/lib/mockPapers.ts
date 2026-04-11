@@ -1,3 +1,4 @@
+// Campus Pace - Stable Upload & Sync Update - 2026-04-11
 export const allQuestionPapers: any[] = [
     { id: 101, subject: "COMP SEM III May 2025", year: "2025", semester: "Semester 3", type: "Regular", url: "https://engineering.saraswatikharghar.edu.in/wp-content/uploads/2024/05/COMP-SEM-III-May-2025.pdf" },
     { id: 102, subject: "COMP SEM IV May 2025", year: "2025", semester: "Semester 4", type: "Regular", url: "https://engineering.saraswatikharghar.edu.in/wp-content/uploads/2024/05/COMP-SEM-IV-May-2025.pdf" },

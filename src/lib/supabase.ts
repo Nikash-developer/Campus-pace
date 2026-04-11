@@ -1,3 +1,4 @@
+// Campus Pace - Stable Upload & Sync Update - 2026-04-11
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_URL) 

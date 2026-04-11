@@ -1,3 +1,4 @@
+// Campus Pace - Stable Upload & Sync Update - 2026-04-11
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';

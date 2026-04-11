@@ -1,3 +1,4 @@
+// Campus Pace - Stable Upload & Sync Update - 2026-04-11
 import { AttendanceAnalytics, AttendanceMapping } from '../types';
 
 const API_BASE = '/api/attendance';

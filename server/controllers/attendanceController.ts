@@ -1,3 +1,4 @@
+// Campus Pace - Stable Upload & Sync Update - 2026-04-11
 import { Request, Response } from 'express';
 import { supabase } from '../../src/lib/supabase';
 import { refreshAnalyticsCache } from '../utils/attendanceAnalytics';

@@ -1,3 +1,4 @@
+// Campus Pace - Stable Upload & Sync Update - 2026-04-11
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({

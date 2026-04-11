@@ -1,3 +1,4 @@
+// Campus Pace - Stable Upload & Sync Update - 2026-04-11
 import express from 'express';
 import { getFacultyMappings, markAttendance, getStudentSummary, getDefaulters } from '../controllers/attendanceController';
 

@@ -1,3 +1,4 @@
+// Campus Pace - Stable Upload & Sync Update - 2026-04-11
 import Notice from '../models/Notice';
 
 export const getNotices = async (req: any, res: any) => {

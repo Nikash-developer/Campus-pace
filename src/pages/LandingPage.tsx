@@ -1,3 +1,4 @@
+// Campus Pace - Stable Upload & Sync Update - 2026-04-11
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
