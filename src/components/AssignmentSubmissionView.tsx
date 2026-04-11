@@ -236,8 +236,8 @@ export const AssignmentSubmissionView: React.FC<AssignmentSubmissionViewProps> =
             alert("Only PDF and DOCX files are supported.");
             return;
         }
-        if (selectedFile.size > 25 * 1024 * 1024) {
-            alert("File size exceeds 25MB limit.");
+        if (selectedFile.size > 4.5 * 1024 * 1024) {
+            alert("File size exceeds Vercel's 4.5MB limit for hobby projects. Please compress your PDF and try again.");
             return;
         }
         handleActualUpload(selectedFile);
@@ -423,7 +423,7 @@ export const AssignmentSubmissionView: React.FC<AssignmentSubmissionViewProps> =
                                         <h3 className={`text-2xl font-black ${t.heading} mb-2`}>Upload your assignment</h3>
                                         <p className={`${t.muted} text-sm font-medium max-w-xs mx-auto`}>
                                             Drag & drop your PDF or DOCX file here to save a tree.<br />
-                                            <span className={`text-[10px] font-bold ${t.muted} opacity-60 uppercase mt-2 block`}>Maximum file size: 25MB</span>
+                                            <span className={`text-[10px] font-bold ${t.muted} opacity-60 uppercase mt-2 block tracking-tight`}>Vercel Size Limit: 4.5MB (Max)</span>
                                         </p>
                                     </div>
                                     <label className="cursor-pointer bg-primary text-white px-8 py-4 rounded-2xl font-black hover:scale-105 transition-all shadow-xl shadow-primary/20 inline-block pointer-events-auto">
@@ -464,9 +464,9 @@ export const AssignmentSubmissionView: React.FC<AssignmentSubmissionViewProps> =
                                                     <div className="flex justify-between items-end">
                                                         <p className={`text-xs font-black ${t.heading} flex items-center gap-2`}>
                                                             <Loader2 size={14} className="animate-spin text-primary" />
-                                                            Uploading...
+                                                            {uploadProgress < 100 ? 'Uploading...' : 'Finalizing with Cloud...'}
                                                         </p>
-                                                        <p className="text-xs font-black text-primary">{uploadProgress}%</p>
+                                                        <p className="text-xs font-black text-primary">{Math.min(uploadProgress, 99)}%</p>
                                                     </div>
                                                     <div className={`h-3 ${t.search} rounded-full overflow-hidden`}>
                                                         <motion.div

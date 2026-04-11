@@ -68,22 +68,23 @@ export const uploadFile = async (req: any, res: any) => {
         const eco_update = calculateImpact(pageCount);
         const plagiarism_score = Math.floor(Math.random() * 8) + 2;
 
-        // SAVE TO MONGODB (Stateless storage)
-        const submission = await Submission.create({
+        // PRE-GENERATE ID FOR URL (Optimizes one DB hop)
+        const submissionId = new mongoose.Types.ObjectId();
+        const real_url = `/api/submissions/download/${submissionId}`;
+
+        // SAVE TO MONGODB (Stateless storage) - SINGLE OPERATION
+        await Submission.create({
+            _id: submissionId,
             student_id: targetUser?._id || req.user?._id,
             assignment_id: assignment_id,
             file_data: file.buffer,
             content_type: file.mimetype,
-            file_url: `/api/submissions/download/${new mongoose.Types.ObjectId()}`, // Placeholder for legacy URLs
+            file_url: real_url,
             page_count: pageCount,
             plagiarism_score: plagiarism_score,
             status: "Submitted",
             eco_impact: eco_update
         });
-
-        // Update the URL to the real database download link
-        const real_url = `/api/submissions/download/${submission._id}`;
-        await Submission.findByIdAndUpdate(submission._id, { file_url: real_url });
 
         // Update local MongoDB user stats for the IDENTIFIED user
         if (targetUser) {
@@ -100,7 +101,7 @@ export const uploadFile = async (req: any, res: any) => {
         }
 
         res.status(200).json({
-            message: 'Impact calculated and saved to database.',
+            message: 'Impact calculated and saved.',
             eco_update,
             plagiarism_score,
             file_url: real_url
