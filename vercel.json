@@ -13,5 +13,11 @@
             "source": "/(.*)",
             "destination": "/index.html"
         }
-    ]
+    ],
+    "functions": {
+        "api/index.ts": {
+            "includeFiles": "server/**",
+            "excludeFiles": "node_modules/.cache/**"
+        }
+    }
 }
