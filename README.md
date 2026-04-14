@@ -1,17 +1,11 @@
-<!-- Campus Pace - Ultimate Force Update - 2026-04-11 -->
-<!-- Campus Pace - Global Synchronization & Stabilization Update - 2026-04-11 -->
-
-WELCOME TO GREENSYNC !!!
-
-## Run Locally
-
-**Prerequisites:**  Node.js
 
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+WELCOME TO CAMPUS PACE !!!
 
-
+Campus Pace is a dual-portal, unified digital platform designed to streamline academic processes for both students and faculty. In traditional systems, institutions rely on multiple platforms for assignments, communication, attendance, and learning resources, leading to inefficiency and confusion. Campus Pace addresses this issue by integrating all essential academic functionalities into a single, well-structured system.
+The platform offers two main interfaces: a student portal and a faculty portal. Students can access previous year questions (PYQs), notes, assignments, and other academic resources in one place. Additionally, an AI-powered chatbot assists in resolving academic doubts, enabling continuous and self-paced learning. For faculty, the platform provides tools to upload assignments, share notices, and issue emergency alerts, ensuring smooth and effective communication.
+One of the key features of Campus Pace is its smart attendance management system. Faculty members can mark attendance by selecting subject, date, year, division, and branch, after which a structured student list is generated. The system securely stores attendance data and provides an intelligent tracker that helps students monitor their attendance percentage. It also predicts the number of lectures required to maintain the mandatory 75% attendance and issues warnings if the threshold is at risk.
+The platform also introduces an advanced assignment workflow, where students upload submissions (such as PDFs) to cloud storage, and teachers can evaluate them using a side-by-side grading interface. This enables simultaneous grading, improving efficiency and reducing workload. Additional features such as discussion forums, live classrooms, and performance dashboards further enhance collaboration and learning outcomes.
+From a technical perspective, Campus Pace is built using a modern and scalable stack. The frontend utilizes React.js, Next.js, and Tailwind CSS for a responsive user interface. The backend is powered by Node.js and Express.js, with Socket.io enabling real-time interactions. MongoDB is used for data storage, while AWS S3 manages file storage and Redis supports caching. Live classroom functionality is enabled through WebRTC.
+Campus Pace follows a B2B SaaS business model, charging institutions on a per-student basis. For instance, with 100 colleges having 1,000 students each paying ₹50 annually, the platform can generate ₹50 lakh per year, along with additional revenue from premium features and analytics.
+In conclusion, Campus Pace is a comprehensive academic ecosystem that enhances efficiency, improves communication, and offers scalable solutions for modern education systems.
