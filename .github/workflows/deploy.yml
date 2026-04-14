@@ -22,20 +22,18 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-          cache-dependency-path: './Green-SYnc/package-lock.json'
+          cache-dependency-path: './package-lock.json'
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./Green-SYnc
 
       - name: Build
         run: npm run build
-        working-directory: ./Green-SYnc
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './Green-SYnc/dist'
+          path: './dist'
 
   deploy:
     environment:
