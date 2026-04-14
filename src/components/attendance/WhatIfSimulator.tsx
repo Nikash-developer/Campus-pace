@@ -102,15 +102,15 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
               text={`${simulatedPercentage.toFixed(0)}%`}
               styles={buildStyles({
                 textSize: '16px',
-                pathColor: isSafe ? '#006a2b' : '#EF4444',
-                textColor: isSafe ? '#006a2b' : '#EF4444',
-                trailColor: t.bg === 'bg-primary-dim' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+                pathColor: isSafe ? '#22C55E' : '#EF4444',
+                textColor: isSafe ? '#22C55E' : '#EF4444',
+                trailColor: t.bg === 'bg-[#0f172a]' ? '#1e293b' : '#f1f5f9',
                 strokeLinecap: 'round',
                 pathTransitionDuration: 0.5,
               })}
             />
           </div>
-          <p className={`text-[10px] font-black uppercase tracking-[0.2em] mt-4 ${isSafe ? 'text-primary' : 'text-red-500'}`}>
+          <p className={`text-[10px] font-black uppercase tracking-[0.2em] mt-4 ${isSafe ? 'text-green-500' : 'text-red-500'}`}>
             {isSafe ? 'Safe Zone' : 'Defaulter Zone'}
           </p>
         </div>

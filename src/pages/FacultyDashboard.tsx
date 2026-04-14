@@ -22,55 +22,55 @@ import { FacultyAttendancePage } from '../components/attendance/FacultyAttendanc
 
 const themes = {
   Light: {
-    bg: 'bg-surface',
-    header: 'bg-surface-container-lowest border-outline-variant',
-    text: 'text-on-surface',
-    heading: 'text-on-surface',
-    card: 'bg-surface-container-lowest border-outline-variant',
-    navActive: 'text-primary bg-primary-container/20',
-    navInactive: 'text-on-surface-variant hover:bg-surface-container-low',
-    search: 'bg-surface-container-low',
-    input: 'bg-surface-container-low border-outline-variant',
-    muted: 'text-on-surface-variant/60',
-    border: 'border-outline-variant',
-    accent: 'text-primary',
-    accentBg: 'bg-primary-container/20',
-    sidebar: 'bg-surface-container-lowest',
-    sidebarHover: 'hover:bg-surface-container-low'
+    bg: 'bg-[#F8FAF9]',
+    header: 'bg-white border-slate-100',
+    text: 'text-slate-900',
+    heading: 'text-slate-800',
+    card: 'bg-white border-slate-100',
+    navActive: 'text-[#22C55E] bg-[#22C55E]/5',
+    navInactive: 'text-slate-500 hover:bg-slate-50',
+    search: 'bg-[#F1F3F5]',
+    input: 'bg-slate-50 border-slate-100',
+    muted: 'text-slate-400',
+    border: 'border-slate-100',
+    accent: 'text-[#22C55E]',
+    accentBg: 'bg-[#22C55E]/5',
+    sidebar: 'bg-white',
+    sidebarHover: 'hover:bg-slate-50'
   },
   Dark: {
-    bg: 'bg-primary-dim',
-    header: 'bg-primary-dim/80 backdrop-blur-md border-on-primary/10',
-    text: 'text-on-primary',
-    heading: 'text-primary-container',
-    card: 'bg-on-surface/5 backdrop-blur-md border-on-primary/10',
-    navActive: 'text-primary-container bg-primary-container/10',
-    navInactive: 'text-on-primary/60 hover:bg-on-primary/10',
-    search: 'bg-on-primary/5',
-    input: 'bg-on-primary/5 border-on-primary/10',
-    muted: 'text-on-primary/40',
-    border: 'border-on-primary/10',
-    accent: 'text-primary-container',
-    accentBg: 'bg-primary-container/10',
-    sidebar: 'bg-primary-dim',
-    sidebarHover: 'hover:bg-on-primary/5'
+    bg: 'bg-[#0f172a]',
+    header: 'bg-[#1e293b] border-slate-800',
+    text: 'text-slate-100',
+    heading: 'text-white',
+    card: 'bg-[#1e293b] border-slate-800',
+    navActive: 'text-[#22C55E] bg-[#22C55E]/10',
+    navInactive: 'text-slate-400 hover:bg-slate-800',
+    search: 'bg-[#334155]',
+    input: 'bg-[#1e292a] border-slate-700',
+    muted: 'text-slate-500',
+    border: 'border-slate-800',
+    accent: 'text-[#22C55E]',
+    accentBg: 'bg-[#22C55E]/10',
+    sidebar: 'bg-[#1e293b]',
+    sidebarHover: 'hover:bg-slate-800'
   },
   Eco: {
-    bg: 'bg-surface',
-    header: 'bg-surface-container-lowest border-primary/20',
-    text: 'text-on-surface',
-    heading: 'text-primary',
-    card: 'bg-surface-container-lowest border-primary/10',
-    navActive: 'text-primary bg-primary-container/30',
-    navInactive: 'text-on-surface-variant/80 hover:bg-primary-container/10',
-    search: 'bg-primary-container/10',
-    input: 'bg-surface-container-low border-primary/20',
-    muted: 'text-on-surface-variant/60',
-    border: 'border-primary/10',
-    accent: 'text-primary',
-    accentBg: 'bg-primary-container/20',
-    sidebar: 'bg-surface-container-lowest',
-    sidebarHover: 'hover:bg-primary-container/5'
+    bg: 'bg-[#f0f4f0]',
+    header: 'bg-[#f8faf8] border-[#dce6dc]',
+    text: 'text-[#2d4d2d]',
+    heading: 'text-[#1e3a1e]',
+    card: 'bg-[#fbfcff] border-[#dce6dc]',
+    navActive: 'text-[#2e7d32] bg-[#2e7d32]/10',
+    navInactive: 'text-[#5d7d5d] hover:bg-[#e8f0e8]',
+    search: 'bg-[#e8f0e8]',
+    input: 'bg-[#f8faf8] border-[#dce6dc]',
+    muted: 'text-[#8ca68c]',
+    border: 'border-[#dce6dc]',
+    accent: 'text-[#2e7d32]',
+    accentBg: 'bg-[#2e7d32]/10',
+    sidebar: 'bg-[#f8faf8]',
+    sidebarHover: 'hover:bg-[#e8f0e8]'
   }
 };
 
@@ -342,9 +342,9 @@ export default function FacultyDashboard() {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsMobileMenuOpen(true)}
-            className={`lg:hidden p-2 ${t.accent} hover:opacity-80`}
+            className="lg:hidden p-2 text-slate-600 hover:text-slate-900"
           >
-            <div className="flex flex-col gap-1.5 w-6">
+            <div className="flex flex-col gap-1.5 w-6 text-[#22C55E]">
               <div className="h-0.5 w-full bg-current rounded-full"></div>
               <div className="h-0.5 w-full bg-current rounded-full"></div>
               <div className="h-0.5 w-full bg-current rounded-full"></div>
@@ -382,7 +382,7 @@ export default function FacultyDashboard() {
           ))}
         </nav>
         <div className="flex items-center gap-3 lg:gap-4">
-          <button onClick={() => setShowLogoutModal(true)} className={`flex items-center gap-2 px-3 lg:px-4 py-2 ${t.bg} ${t.text} border ${t.border} text-xs lg:text-sm font-bold rounded-xl hover:bg-primary/10 hover:text-primary transition-all duration-300`}>
+          <button onClick={() => setShowLogoutModal(true)} className={`flex items-center gap-2 px-3 lg:px-4 py-2 ${t.bg} ${t.text} border ${t.border} text-xs lg:text-sm font-bold rounded-xl hover:bg-emerald-500/10 hover:text-emerald-500 transition-all duration-300`}>
             <LogOut size={16} /> <span className="hidden sm:inline">Log Out</span>
           </button>
           <div className="relative">
@@ -476,7 +476,7 @@ export default function FacultyDashboard() {
                       setIsMobileMenuOpen(false);
                     }}
                     className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold transition-all ${activeNav === item.id
-                      ? 'bg-primary text-on-primary shadow-lg shadow-primary/20'
+                      ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
                       : `${t.muted} ${t.sidebarHover}`}`}
                   >
                     {item.icon}
@@ -485,7 +485,7 @@ export default function FacultyDashboard() {
                 ))}
               </div>
 
-              <div className={`mt-auto p-6 ${t.accentBg} rounded-3xl border ${t.border}`}>
+              <div className={`mt-auto p-6 ${t.accentBg} rounded-3xl border ${t.border.replace('border-', 'border-emerald-500/10')}`}>
                 <p className={`text-[10px] font-black ${t.muted} uppercase tracking-widest mb-2`}>Paper Saved</p>
                 <div className="flex items-center justify-between">
                   <span className={`text-2xl font-black ${t.accent}`}>{stats.pages}</span>
@@ -538,7 +538,7 @@ export default function FacultyDashboard() {
                     </button>
                     <button
                       onClick={() => setShowNewAssignmentModal(true)}
-                      className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 lg:px-6 py-2.5 lg:py-3 organic-gradient text-on-primary text-xs lg:text-sm font-black rounded-2xl transition-all shadow-lg shadow-primary/20 group">
+                      className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 lg:px-6 py-2.5 lg:py-3 bg-emerald-500 hover:bg-emerald-600 text-white text-xs lg:text-sm font-black rounded-2xl transition-all shadow-lg shadow-emerald-500/20 group">
                       <Plus size={16} className="lg:w-[18px] lg:h-[18px] group-hover:rotate-90 transition-transform" /> <span className="hidden sm:inline">New Assignment</span>
                       <span className="sm:hidden">Create</span>
                     </button>
@@ -584,28 +584,28 @@ export default function FacultyDashboard() {
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setActiveStudentId(student.id)}
                         className={`w-full p-4 rounded-2xl flex items-center gap-4 transition-all duration-300 relative overflow-hidden group ${activeStudentId === student.id
-                          ? 'bg-primary-container/20 border border-primary/30 shadow-md transform'
-                          : `${t.card} hover:border-primary/30 hover:shadow-lg`
+                          ? 'bg-gradient-to-br from-[#F0FDF4] to-white border border-[#22C55E]/30 shadow-md transform'
+                          : 'bg-white border border-slate-100 hover:border-[#22C55E]/30 hover:shadow-lg'
                           }`}
                       >
                         {activeStudentId === student.id && (
-                          <motion.div layoutId="activeStudentHighlight" className="absolute left-0 top-0 bottom-0 w-1.5 bg-primary" />
+                          <motion.div layoutId="activeStudentHighlight" className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#22C55E]" />
                         )}
-                        <div className={`w-12 h-12 rounded-full overflow-hidden border-2 shadow-sm shrink-0 transition-colors duration-300 ${activeStudentId === student.id ? 'border-primary' : 'border-outline-variant group-hover:border-primary/50'}`}>
+                        <div className={`w-12 h-12 rounded-full overflow-hidden border-2 shadow-sm shrink-0 transition-colors duration-300 ${activeStudentId === student.id ? 'border-[#22C55E]' : 'border-white group-hover:border-[#22C55E]/50'}`}>
                           <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${student.name}`} alt="Avatar" className="w-full h-full object-cover" />
                         </div>
                         <div className="flex-1 text-left min-w-0">
                           <div className="flex justify-between items-center mb-1">
-                            <p className={`text-[13px] font-black truncate transition-colors duration-300 ${activeStudentId === student.id ? 'text-primary' : `${t.text} group-hover:text-primary`}`}>{student.name}</p>
-                            <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg ${student.status === 'Graded' ? 'bg-primary-container/30 text-primary' : student.status === 'Late' ? 'bg-red-50 text-red-600' : 'bg-surface-container-low text-on-surface-variant'}`}>
+                            <p className={`text-[13px] font-black truncate transition-colors duration-300 ${activeStudentId === student.id ? 'text-[#166534]' : 'text-slate-900 group-hover:text-[#22C55E]'}`}>{student.name}</p>
+                            <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg ${student.status === 'Graded' ? 'bg-[#DCFCE7] text-[#166534]' : student.status === 'Late' ? 'bg-red-50 text-red-600' : 'bg-slate-50 text-slate-500'}`}>
                               {student.status}
                             </span>
                           </div>
                           <div className="flex justify-between items-end">
                             <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{student.date}</p>
                             <div className="flex items-center gap-1.5">
-                              <span className={`text-xs font-black tabular-nums tracking-tight ${activeStudentId === student.id ? 'text-primary' : `${t.muted} group-hover:text-on-surface`}`}>{student.grade}</span>
-                              {student.status === 'Graded' && <CheckCircle2 size={14} className="text-primary" />}
+                              <span className={`text-xs font-black tabular-nums tracking-tight ${activeStudentId === student.id ? 'text-[#22C55E]' : 'text-slate-400 group-hover:text-slate-700'}`}>{student.grade}</span>
+                              {student.status === 'Graded' && <CheckCircle2 size={14} className="text-[#22C55E]" />}
                             </div>
                           </div>
                         </div>
@@ -632,7 +632,7 @@ export default function FacultyDashboard() {
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => setIsHighlighting(!isHighlighting)}
-                          className={`p-1.5 lg:p-2 rounded-xl transition-all flex items-center gap-2 px-2 lg:px-3 ${isHighlighting ? 'bg-primary text-on-primary shadow-lg shadow-primary/20' : `hover:${t.search} ${t.muted}`}`}
+                          className={`p-1.5 lg:p-2 rounded-xl transition-all flex items-center gap-2 px-2 lg:px-3 ${isHighlighting ? 'bg-[#22C55E] text-white shadow-lg shadow-[#22C55E]/20' : 'hover:bg-slate-50 text-slate-400'}`}
                         >
                           <Type size={14} className="lg:w-4 lg:h-4" />
                           <span className="text-[10px] lg:text-xs font-bold hidden sm:inline">Highlight</span>
@@ -672,10 +672,12 @@ export default function FacultyDashboard() {
 
                         <p className="hover:text-slate-900 transition-colors cursor-text">Furthermore, the integration of permeable surfaces in urban design significantly reduces storm-water runoff, which in metropolitan areas frequently leads to localized flooding and the contamination of local water bodies with untreated urban pollutants.</p>
 
-                          <motion.div className="my-6 lg:my-8 p-4 lg:p-6 bg-surface-container-low cursor-pointer rounded-2xl border border-outline-variant flex items-center justify-between hover:shadow-md hover:border-primary/30 transition-all group"
-                          >
+                        <motion.div
+                          whileHover={{ scale: 1.01 }}
+                          className="my-6 lg:my-8 p-4 lg:p-6 bg-slate-50 cursor-pointer rounded-2xl border border-slate-100 flex items-center justify-between hover:shadow-md hover:border-[#22C55E]/30 transition-all group"
+                        >
                           <div className="flex items-center gap-3">
-                            <div className="p-2 bg-surface-container-lowest rounded-xl shadow-sm group-hover:scale-110 transition-transform"><FileText size={18} className="lg:w-5 lg:h-5 text-primary" /></div>
+                            <div className="p-2 bg-white rounded-xl shadow-sm group-hover:scale-110 transition-transform"><FileText size={18} className="lg:w-5 lg:h-5 text-[#22C55E]" /></div>
                             <div>
                               <p className="text-[10px] lg:text-xs font-black text-slate-900 group-hover:text-[#22C55E] transition-colors">dataset_urban_emissions.csv</p>
                               <p className="text-[9px] lg:text-[10px] text-slate-400 font-bold">Attached Analysis Target</p>
@@ -778,7 +780,7 @@ export default function FacultyDashboard() {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={handleSubmitGrade}
-                          className="flex-1 py-3.5 organic-gradient text-on-primary text-sm font-black rounded-2xl transition-all shadow-lg shadow-primary/30 group relative overflow-hidden min-w-[140px]"
+                          className="flex-1 py-3.5 bg-[#22C55E] hover:bg-[#16a34a] text-white text-sm font-black rounded-2xl transition-all shadow-lg shadow-[#22C55E]/30 group relative overflow-hidden min-w-[140px]"
                         >
                           <span className="relative z-10 block flex flex-row items-center justify-center gap-2">
                             {activeStudent.status === 'Graded' ? 'Update Grade' : 'Submit Grade'}

@@ -179,7 +179,7 @@ export const AttendanceMarker: React.FC<AttendanceMarkerProps> = ({
                     <div className="absolute -inset-2 rounded-full bg-gradient-to-tr from-primary to-blue-400 blur-[6px] opacity-20 animate-pulse" />
                     <img 
                       src={currentStudent.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentStudent.name}`} 
-                      className="w-32 h-32 rounded-full relative border-4 border-surface-container-lowest shadow-lg bg-surface-container-low"
+                      className="w-32 h-32 rounded-full relative border-4 border-white shadow-lg bg-slate-100"
                       alt="" 
                     />
                   </div>
@@ -205,7 +205,7 @@ export const AttendanceMarker: React.FC<AttendanceMarkerProps> = ({
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => handleMark('present')}
-                      className="flex-1 py-4 bg-primary-container/20 text-primary rounded-2xl font-black text-sm border-2 border-primary/10 hover:bg-primary hover:text-on-primary hover:border-primary transition-all flex items-center justify-center gap-2"
+                      className="flex-1 py-4 bg-emerald-50 text-emerald-600 rounded-2xl font-black text-sm border-2 border-emerald-200/50 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all flex items-center justify-center gap-2"
                     >
                       <CheckCircle2 size={18} /> Present
                     </motion.button>
@@ -227,7 +227,7 @@ export const AttendanceMarker: React.FC<AttendanceMarkerProps> = ({
                 animate={{ opacity: 1, scale: 1 }}
                 className="text-center space-y-6"
               >
-                <div className="w-20 h-20 bg-primary-container text-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <CheckCircle2 size={40} />
                 </div>
                 <h3 className={`text-2xl font-black ${t.heading}`}>Marking Complete</h3>
@@ -236,9 +236,9 @@ export const AttendanceMarker: React.FC<AttendanceMarkerProps> = ({
                   Review the stats below and sync to save.
                 </p>
                 <div className="flex gap-4 justify-center">
-                   <div className={`p-4 rounded-2xl ${t.search} border ${t.border} text-center min-w-[100px]`}>
-                      <p className={`text-[10px] font-black ${t.muted} uppercase`}>Present</p>
-                      <p className="text-xl font-black text-primary">{Object.values(attendance).filter(v => v === 'present').length}</p>
+                   <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-center min-w-[100px]">
+                      <p className="text-[10px] font-black text-slate-400 uppercase">Present</p>
+                      <p className="text-xl font-black text-emerald-600">{Object.values(attendance).filter(v => v === 'present').length}</p>
                    </div>
                    <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-center min-w-[100px]">
                       <p className="text-[10px] font-black text-slate-400 uppercase">Absent</p>

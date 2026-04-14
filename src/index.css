@@ -4,56 +4,26 @@
 @import "tailwindcss";
 
 @theme {
-  /* 🌿 1. Core Brand Colors */
-  --color-primary: #006a2b;
-  --color-primary-container: #72fe8f;
-  --color-primary-dim: #005d25;
-
-  /* 🌱 2. Surface System */
-  --color-surface: #dbffe8;
-  --color-surface-container-low: #c4fedd;
-  --color-surface-container-highest: #a4ecc5;
-  --color-surface-container-lowest: #ffffff;
-
-  /* 🌊 3. Accent & Variant Colors */
-  --color-surface-variant: rgba(164, 236, 197, 0.2);
-  --color-outline-variant: rgba(134, 184, 156, 0.15);
-
-  /* 🌑 4. Text Colors */
-  --color-on-surface: #003622;
-  --color-on-surface-variant: #35654d;
-  --color-on-primary: #cfffcf;
-
-  /* Utils & Defaults */
+  --color-primary: #22C55E;
+  --color-primary-light: #F0FDF4;
+  --color-primary-dark: #166534;
+  --color-eco-green: #A8D5BA;
+  --color-bg-light: #F8FAF9;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --radius-xl: 12px;
   --radius-2xl: 18px;
   --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
   --shadow-premium: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
-
-  /* Legacy Mappings to prevent breakage */
-  --color-eco-green: var(--color-primary-container);
-  --color-bg-light: var(--color-surface);
 }
 
 @layer base {
   body {
-    @apply bg-surface text-on-surface font-sans antialiased;
-  }
-}
-
-@layer utilities {
-  .organic-gradient {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-container) 100%);
-  }
-
-  .glass-morph {
-    @apply bg-surface-container-lowest/60 backdrop-blur-xl border border-outline-variant;
+    @apply bg-bg-light text-slate-900 font-sans antialiased;
   }
 }
 
 .glass-card {
-  @apply bg-surface-container-lowest/60 backdrop-blur-md border border-outline-variant shadow-sm transition-all duration-300;
+  @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-sm transition-all duration-300;
 }
 
 .hover-lift {

@@ -209,12 +209,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface flex items-center justify-center p-4 md:p-6 font-sans text-on-surface">
+    <div className="min-h-screen bg-[#F8FAF9] flex items-center justify-center p-4 md:p-6 font-sans">
       <Link
         to="/"
-        className="fixed top-8 left-8 flex items-center gap-2 text-on-surface-variant hover:text-primary font-bold transition-all group z-50"
+        className="fixed top-8 left-8 flex items-center gap-2 text-slate-500 hover:text-primary font-bold transition-all group z-50"
       >
-        <div className="w-10 h-10 rounded-full bg-surface-container-lowest shadow-sm flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-all border border-outline-variant">
+        <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
           <ChevronLeft size={20} />
         </div>
         <span className="hidden md:block">Back to Home</span>
@@ -224,14 +224,14 @@ export default function LoginPage() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-full max-w-[1150px] bg-surface-container-lowest rounded-[2.5rem] shadow-2xl shadow-primary/5 overflow-hidden flex flex-col md:flex-row min-h-[700px] border border-outline-variant"
+        className="w-full max-w-[1150px] bg-white rounded-[2.5rem] shadow-2xl shadow-primary/5 overflow-hidden flex flex-col md:flex-row min-h-[700px] border border-slate-100"
       >
         <div className="w-full md:w-1/2 p-8 lg:p-12 flex flex-col overflow-y-auto max-h-[90vh] md:max-h-none">
           <div className="mb-10 flex items-center gap-3 group">
-            <div className="p-2 bg-primary-container rounded-xl text-primary transform group-hover:rotate-12 transition-transform">
+            <div className="p-2 bg-primary/10 rounded-xl text-primary transform group-hover:rotate-12 transition-transform">
               <Leaf size={32} fill="currentColor" />
             </div>
-            <span className="text-2xl font-black tracking-tight text-on-surface italic">Campus pace</span>
+            <span className="text-2xl font-black tracking-tight text-slate-900 italic">Campus pace</span>
           </div>
 
           <AnimatePresence mode="wait">
@@ -244,10 +244,10 @@ export default function LoginPage() {
               className="flex-1 flex flex-col justify-center"
             >
               <div className="mb-6">
-                <h1 className="text-3xl font-black text-on-surface mb-2">
+                <h1 className="text-3xl font-black text-slate-900 mb-2">
                   {view === 'login' ? 'Welcome Back' : view === 'forgot-password' ? 'Reset Password' : 'Create Account'}
                 </h1>
-                <p className="text-sm text-on-surface-variant leading-relaxed">
+                <p className="text-sm text-slate-500 leading-relaxed">
                   {view === 'login'
                     ? 'Enter your campus credentials to access your sustainable dashboard.'
                     : view === 'forgot-password'
@@ -261,7 +261,7 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => handleSocialSignIn('google')}
-                    className="flex items-center justify-center gap-3 py-3 px-4 bg-surface-container-lowest border border-outline-variant rounded-xl hover:bg-surface-container-low transition-all font-bold text-sm text-on-surface-variant shadow-sm group"
+                    className="flex items-center justify-center gap-3 py-3 px-4 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all font-bold text-sm text-slate-700 shadow-sm group"
                   >
                     <img src="https://cdn.cdnlogo.com/logos/g/35/google-icon.svg" alt="Google" className="w-5 h-5" />
                     Google
@@ -269,17 +269,17 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => handleSocialSignIn('github')}
-                    className="flex items-center justify-center gap-3 py-3 px-4 bg-on-surface border border-on-surface rounded-xl hover:opacity-90 transition-all font-bold text-sm text-on-primary shadow-sm group"
+                    className="flex items-center justify-center gap-3 py-3 px-4 bg-slate-900 border border-slate-900 rounded-xl hover:bg-slate-800 transition-all font-bold text-sm text-white shadow-sm group"
                   >
-                    <Github size={20} className="text-on-primary" />
+                    <Github size={20} className="text-white" />
                     GitHub
                   </button>
                 </div>
               )}
 
-              <div className="relative mb-8 text-center text-[10px] font-black text-on-surface-variant/40 uppercase tracking-widest">
-                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-outline-variant"></div></div>
-                <span className="relative px-4 bg-surface-container-lowest">or use email</span>
+              <div className="relative mb-8 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
+                <span className="relative px-4 bg-white">or use email</span>
               </div>
 
               {configError && (
@@ -338,15 +338,15 @@ export default function LoginPage() {
                 {view === 'signup' && (
                   <div className="space-y-4">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest ml-1">Full Name</label>
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
                       <div className="relative group">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60 w-4 h-4 transition-colors group-focus-within:text-primary" />
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 transition-colors group-focus-within:text-primary" />
                         <input
                           type="text"
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
                           placeholder="John Doe"
-                          className="w-full pl-11 pr-4 py-3 bg-surface border border-outline-variant rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all text-sm font-medium text-on-surface"
+                          className="w-full pl-11 pr-4 py-3 bg-[#F8FAF9] border border-slate-100 rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all text-sm font-medium"
                           required
                         />
                       </div>
@@ -355,15 +355,15 @@ export default function LoginPage() {
                 )}
 
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest ml-1">Email Address</label>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
                   <div className="relative group">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60 w-4 h-4 transition-colors group-focus-within:text-primary" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 transition-colors group-focus-within:text-primary" />
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="campus.email@university.edu"
-                      className="w-full pl-11 pr-4 py-3 bg-surface border border-outline-variant rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all text-sm font-medium text-on-surface"
+                      className="w-full pl-11 pr-4 py-3 bg-[#F8FAF9] border border-slate-100 rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all text-sm font-medium"
                       required
                     />
                   </div>
@@ -372,7 +372,7 @@ export default function LoginPage() {
                 {(view === 'login' || view === 'signup') && (
                   <div className="space-y-1">
                     <div className="flex justify-between items-center ml-1">
-                      <label className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest">{view === 'signup' ? 'Create Password' : 'Password'}</label>
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{view === 'signup' ? 'Create Password' : 'Password'}</label>
                       {view === 'login' && (
                         <button
                           type="button"
@@ -384,19 +384,19 @@ export default function LoginPage() {
                       )}
                     </div>
                     <div className="relative group">
-                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60 w-4 h-4 transition-colors group-focus-within:text-primary" />
+                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 transition-colors group-focus-within:text-primary" />
                       <input
                         type={showPassword ? 'text' : 'password'}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••"
-                        className="w-full pl-11 pr-12 py-3 bg-surface border border-outline-variant rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all text-sm font-medium text-on-surface"
+                        className="w-full pl-11 pr-12 py-3 bg-[#F8FAF9] border border-slate-100 rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all text-sm font-medium"
                         required
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60 hover:text-primary transition-colors p-1"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors p-1"
                         aria-label={showPassword ? "Hide password" : "Show password"}
                       >
                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -407,7 +407,7 @@ export default function LoginPage() {
 
                 {(view === 'login' || view === 'signup') && (
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest ml-1">Role</label>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Role</label>
                     <div className="grid grid-cols-2 gap-4">
                       {(['student', 'faculty'] as const).map((r) => (
                         <button
@@ -415,11 +415,11 @@ export default function LoginPage() {
                           type="button"
                           onClick={() => setRole(r)}
                           className={`p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-1 group ${role === r
-                            ? 'border-primary bg-primary-container/20 text-primary'
-                            : 'border-outline-variant hover:border-primary/30 text-on-surface-variant'
+                            ? 'border-primary bg-primary/5 text-primary'
+                            : 'border-slate-100 hover:border-slate-200 text-slate-400'
                             }`}
                         >
-                          <div className={`p-1.5 rounded-lg transition-colors ${role === r ? 'bg-primary text-on-primary' : 'bg-surface-container-low text-on-surface-variant group-hover:bg-primary-container/30'
+                          <div className={`p-1.5 rounded-lg transition-colors ${role === r ? 'bg-primary text-white' : 'bg-slate-50 text-slate-400 group-hover:bg-slate-100'
                             }`}>
                             {React.cloneElement(roleInfo[r as keyof typeof roleInfo]?.icon || <ShieldCheck size={16} />, { size: 16 })}
                           </div>
@@ -442,13 +442,13 @@ export default function LoginPage() {
                           {roleInfo[role as keyof typeof roleInfo].idLabel}
                         </label>
                         <div className="relative group">
-                          <BadgeCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60 w-4 h-4 transition-colors group-focus-within:text-primary" />
+                          <BadgeCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 transition-colors group-focus-within:text-primary" />
                           <input
                             type="text"
                             value={idNumber}
                             onChange={(e) => setIdNumber(e.target.value)}
                             placeholder="ID-12345"
-                            className="w-full pl-11 pr-4 py-3 bg-surface border border-outline-variant rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all text-sm font-medium text-on-surface"
+                            className="w-full pl-11 pr-4 py-3 bg-[#F8FAF9] border border-slate-100 rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all text-sm font-medium"
                             required
                           />
                         </div>
@@ -456,13 +456,13 @@ export default function LoginPage() {
                       <div className="space-y-1">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Department</label>
                         <div className="relative group">
-                          <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60 w-4 h-4 transition-colors group-focus-within:text-primary" />
+                          <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 transition-colors group-focus-within:text-primary" />
                           <input
                             type="text"
                             value={department}
                             onChange={(e) => setDepartment(e.target.value)}
                             placeholder="Computer Science"
-                            className="w-full pl-11 pr-4 py-3 bg-surface border border-outline-variant rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all text-sm font-medium text-on-surface"
+                            className="w-full pl-11 pr-4 py-3 bg-[#F8FAF9] border border-slate-100 rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all text-sm font-medium"
                             required
                           />
                         </div>
@@ -473,13 +473,13 @@ export default function LoginPage() {
                       <div className="space-y-1">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Designation / Office</label>
                         <div className="relative group">
-                          <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60 w-4 h-4 transition-colors group-focus-within:text-primary" />
+                          <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 transition-colors group-focus-within:text-primary" />
                           <input
                             type="text"
                             value={designation}
                             onChange={(e) => setDesignation(e.target.value)}
                             placeholder="Senior Professor"
-                            className="w-full pl-11 pr-4 py-3 bg-surface border border-outline-variant rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all text-sm font-medium text-on-surface"
+                            className="w-full pl-11 pr-4 py-3 bg-[#F8FAF9] border border-slate-100 rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all text-sm font-medium"
                             required
                           />
                         </div>
@@ -493,10 +493,10 @@ export default function LoginPage() {
                     key={role}
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-3 bg-primary-container/10 rounded-xl border border-primary/20"
+                    className="p-3 bg-slate-50 rounded-xl border border-slate-100"
                   >
-                    <p className="text-[10px] font-bold text-on-surface mb-0.5">{roleInfo[role as keyof typeof roleInfo].title}</p>
-                    <p className="text-[9px] text-on-surface-variant leading-relaxed">
+                    <p className="text-[10px] font-bold text-slate-900 mb-0.5">{roleInfo[role as keyof typeof roleInfo].title}</p>
+                    <p className="text-[9px] text-slate-500 leading-relaxed">
                       {roleInfo[role as keyof typeof roleInfo].desc}
                     </p>
                   </motion.div>
@@ -505,7 +505,7 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full py-4 organic-gradient hover:brightness-110 text-on-primary font-bold rounded-xl transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 group disabled:opacity-50 mt-2"
+                  className="w-full py-4 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 group disabled:opacity-50 mt-2"
                 >
                   {isLoading ? (
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -520,14 +520,14 @@ export default function LoginPage() {
 
               <div className="mt-6 text-center">
                 {view === 'login' ? (
-                  <p className="text-xs text-on-surface-variant/60 font-medium">
+                  <p className="text-xs text-slate-400 font-medium">
                     Don't have an account?{' '}
                     <button onClick={() => setView('signup')} className="text-primary font-bold hover:underline">Create Account</button>
                   </p>
                 ) : (
                   <button
                     onClick={() => setView('login')}
-                    className="text-xs font-bold text-on-surface-variant hover:text-primary flex items-center gap-2 mx-auto transition-colors"
+                    className="text-xs font-bold text-slate-500 hover:text-primary flex items-center gap-2 mx-auto transition-colors"
                   >
                     <ChevronLeft size={14} /> Back to Login
                   </button>
@@ -537,7 +537,7 @@ export default function LoginPage() {
           </AnimatePresence>
         </div>
 
-        <div className="hidden md:block w-1/2 bg-primary-dim relative overflow-hidden group">
+        <div className="hidden md:block w-1/2 bg-[#111827] relative overflow-hidden group">
           <div className={`w-full h-full transition-all duration-1000 ${treeLoaded ? 'blur-[3px]' : 'blur-0'}`}>
             <TreeAnimation onComplete={() => setTreeLoaded(true)} />
           </div>
@@ -546,7 +546,7 @@ export default function LoginPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: treeLoaded ? 0.4 : 0 }}
             transition={{ duration: 1 }}
-            className="absolute inset-0 bg-gradient-to-t from-primary-dim via-primary-dim/40 to-transparent"
+            className="absolute inset-0 bg-gradient-to-t from-[#111827] via-[#111827]/40 to-transparent"
           />
 
           <div className="absolute inset-0 p-8 lg:p-16 flex flex-col justify-center text-white">
@@ -556,13 +556,13 @@ export default function LoginPage() {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
-                  className="bg-primary-dim/30 backdrop-blur-[6px] p-8 lg:p-12 rounded-[2.5rem] border border-on-primary/5 max-w-lg shadow-2xl"
+                  className="bg-[#111827]/30 backdrop-blur-[6px] p-8 lg:p-12 rounded-[2.5rem] border border-white/5 max-w-lg shadow-2xl"
                 >
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="w-16 h-16 bg-primary-container/20 backdrop-blur-md rounded-2xl border border-primary-container/30 flex items-center justify-center mb-8"
+                    className="w-16 h-16 bg-primary/20 backdrop-blur-md rounded-2xl border border-primary/30 flex items-center justify-center mb-8"
                   >
                     <Sparkles className="text-primary w-10 h-10" />
                   </motion.div>
@@ -573,13 +573,13 @@ export default function LoginPage() {
                     className="text-4xl lg:text-5xl font-black mb-6 leading-tight tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] select-none"
                     style={{ textShadow: '0 0 20px rgba(0,0,0,0.4)' }}
                   >
-                    Welcome back to the <span className="text-primary-container">Green Revolution</span>
+                    Welcome back to the <span className="text-primary">Green Revolution</span>
                   </motion.h2>
                   <motion.p
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="text-base lg:text-lg text-primary-container leading-relaxed mb-10 drop-shadow-md select-none opacity-90"
+                    className="text-base lg:text-lg text-slate-200 leading-relaxed mb-10 drop-shadow-md select-none"
                   >
                     Seamlessly manage your academic life while tracking your eco-footprint. Together, let's create a sustainable, paperless campus.
                   </motion.p>
@@ -590,17 +590,17 @@ export default function LoginPage() {
                     transition={{ delay: 0.5 }}
                     className="flex flex-wrap gap-4"
                   >
-                    <div className="px-5 py-3 bg-on-primary/5 backdrop-blur-md rounded-2xl border border-on-primary/10 flex items-center gap-3 hover:bg-on-primary/10 transition-colors cursor-default">
-                      <div className="w-8 h-8 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary-container">
+                    <div className="px-5 py-3 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex items-center gap-3 hover:bg-white/10 transition-colors cursor-default">
+                      <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
                         <Leaf size={18} fill="currentColor" />
                       </div>
-                      <span className="text-sm font-bold text-on-primary">Eco-Tracking</span>
+                      <span className="text-sm font-bold">Eco-Tracking</span>
                     </div>
-                    <div className="px-5 py-3 bg-on-primary/5 backdrop-blur-md rounded-2xl border border-on-primary/10 flex items-center gap-3 hover:bg-on-primary/10 transition-colors cursor-default">
-                      <div className="w-8 h-8 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary-container">
+                    <div className="px-5 py-3 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex items-center gap-3 hover:bg-white/10 transition-colors cursor-default">
+                      <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
                         <BadgeCheck size={18} />
                       </div>
-                      <span className="text-sm font-bold text-on-primary">Digital Portal</span>
+                      <span className="text-sm font-bold">Digital Portal</span>
                     </div>
                   </motion.div>
                 </motion.div>
@@ -608,8 +608,8 @@ export default function LoginPage() {
             </AnimatePresence>
           </div>
 
-          <div className="absolute top-10 right-10 w-32 h-32 bg-primary-container/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 left-10 w-48 h-48 bg-primary-container/5 rounded-full blur-3xl" />
+          <div className="absolute top-10 right-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 left-10 w-48 h-48 bg-primary/5 rounded-full blur-3xl" />
           <div className="absolute bottom-4 right-6 text-[9px] font-black text-slate-500/30 uppercase tracking-[0.3em] select-none pointer-events-none">
             v1.5.0-DeploymentFix
           </div>

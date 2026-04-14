@@ -249,7 +249,7 @@ export const StudentAttendancePage: React.FC<StudentAttendancePageProps> = ({ us
                     <span className={`text-[8px] font-black ${t.muted} uppercase`}>Overall</span>
                   </div>
                 </div>
-                <p className="text-xs font-black text-primary flex items-center gap-1">
+                <p className="text-xs font-black text-emerald-500 flex items-center gap-1">
                   <CheckCircle2 size={12} /> Above 75% Threshold
                 </p>
               </div>
@@ -345,12 +345,12 @@ export const StudentAttendancePage: React.FC<StudentAttendancePageProps> = ({ us
         {/* Right Column: Insights & Activity */}
         <div className="lg:col-span-4 space-y-8">
            {/* Smart Insights */}
-           <div className={`p-8 organic-gradient rounded-[2.5rem] text-on-primary shadow-xl shadow-primary/20 relative overflow-hidden`}>
+           <div className={`p-8 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-[2.5rem] text-white shadow-xl shadow-indigo-200 relative overflow-hidden`}>
               <div className="absolute top-0 right-0 p-8 opacity-20">
                  <Bot size={80} />
               </div>
               <h3 className="text-lg font-black mb-4 flex items-center gap-2 italic">
-                 <Sparkles size={20} className="text-primary-container" /> Smart Insights
+                 <Sparkles size={20} className="text-indigo-200" /> Smart Insights
               </h3>
               <div className="space-y-4 relative z-10">
                  <div className="p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10">
