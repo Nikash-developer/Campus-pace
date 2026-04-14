@@ -195,7 +195,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const minimalUser: User = {
             id: session.user.id,
             email: session.user.email || '',
-            role: (localStorage.getItem('pending_role') || 'student') as any,
+            role: (localStorage.getItem('pending_role') || session.user.user_metadata?.role || 'student').toLowerCase() as any,
             name: session.user.user_metadata?.full_name || 'User',
             department: ''
           };

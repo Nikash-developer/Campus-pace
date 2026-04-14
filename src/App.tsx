@@ -26,7 +26,10 @@ function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode,
   </div>;
   
   if (!user) return <Navigate to="/login" />;
-  if (allowedRoles && !allowedRoles.includes(user.role)) return <Navigate to="/" />;
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    console.warn(`[ProtectedRoute] Access denied! User role "${user.role}" is not in allowed roles [${allowedRoles.join(', ')}]. Redirecting to landing...`);
+    return <Navigate to="/" />;
+  }
 
   return <>{children}</>;
 }
