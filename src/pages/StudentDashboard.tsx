@@ -1226,6 +1226,12 @@ export default function StudentDashboard() {
     fetchAttendance();
   }, [user?.id]);
 
+  useEffect(() => {
+    if (assignments && assignments.length > 0) {
+      localStorage.setItem('greensync_assignments', JSON.stringify(assignments));
+    }
+  }, [assignments]);
+
   const t = themes[themeMode];
 
   useEffect(() => {
