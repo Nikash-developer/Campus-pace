@@ -16,11 +16,11 @@ export const upload = multer({
 
 export const uploadPaper = async (req: any, res: any) => {
     try {
-        const { subject, year, semester, examType } = req.body;
+        const { subject, year, semester, examType, file_url } = req.body;
         const file = req.file;
 
-        if (!file) {
-            return res.status(400).json({ error: 'No file uploaded' });
+        if (!file && !file_url) {
+            return res.status(400).json({ error: 'No file or cloud URL provided' });
         }
 
         const newPaper = await QuestionPaper.create({
@@ -28,9 +28,9 @@ export const uploadPaper = async (req: any, res: any) => {
             year,
             semester,
             examType,
-            fileData: file.buffer,
-            contentType: file.mimetype,
-            fileUrl: '' // We use direct download route for memory files
+            fileData: file ? file.buffer : null,
+            contentType: file ? file.mimetype : 'application/pdf',
+            fileUrl: file_url || '' 
         });
 
         res.status(201).json({
