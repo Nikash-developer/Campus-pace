@@ -44,50 +44,96 @@ export const handleChatOptions = async (req: any, res: any) => {
                 response = `Your impact is amazing! You've saved ${total_pages_saved} pages, which equals ${total_water_saved}L of water and prevented ${total_co2_prevented}kg of CO2. Keep going!`;
             } else {
                 response = "Your eco-tracking is just getting started. Start submitting assignments digitally to see your impact!";
+        let campusContext = "";
+
+        // --- 1. GATHER LOCAL CONTEXT (Dynamic Facts) ---
+        try {
+            if (msg.includes("notice") || msg.includes("announcement")) {
+                const notices = await Notice.find().sort({ createdAt: -1 }).limit(3);
+                campusContext += notices.length > 0 
+                  ? `[Context: List of Recent Notices: ${notices.map(n => n.title).join(", ")}] ` 
+                  : "[Context: There are no recent notices.] ";
             }
-        }
-        else if (msg.includes("navigation") || msg.includes("where is") || msg.includes("tab")) {
-            response = "You can navigate using the sidebar. 'Dashboard' for overview, 'Courses' for your classes, 'Eco-Impact' for your stats, and 'History' for past notices.";
-        }
-        else if (msg.includes("hello") || msg.includes("hi ") || msg.startsWith("hi")) {
-            response = `Hello ${req.user.name.split(' ')[0]}! I'm your Campus-Pace AI. How can I assist your studies today?`;
-        }
-
-        // --- 2. GROK AI INTEGRATION (Study Queries) ---
-        if (!response) {
-            try {
-                const grokRes = await fetch("https://api.x.ai/v1/chat/completions", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${process.env.GROK_API_KEY}`
-                    },
-                    body: JSON.stringify({
-                        model: "grok-beta",
-                        messages: [
-                            { 
-                                role: "system", 
-                                content: "You are Campus-Pace AI, a highly intelligent and specialized study assistant. Focus strictly on academic and study-related queries. If a user asks something unrelated to education or the campus, politely steer them back to their studies. Be concise, encouraging, and accurate." 
-                            },
-                            { role: "user", content: message }
-                        ],
-                        temperature: 0.7
-                    })
-                });
-
-                if (grokRes.ok) {
-                    const data = await grokRes.json();
-                    response = data.choices?.[0]?.message?.content || "I'm having trouble thinking right now. Please try again.";
-                } else {
-                    response = "Our study assistant is currently busy with other students. Try asking a campus-specific question instead!";
+            if (msg.includes("assignment") || msg.includes("homework") || msg.includes("deadline")) {
+                const pending = await Assignment.find().sort({ deadline: 1 }).limit(3);
+                campusContext += pending.length > 0
+                  ? `[Context: Upcoming Assignments: ${pending.map(a => `${a.title} due on ${new Date(a.deadline!).toLocaleDateString()}`).join(", ")}] `
+                  : "[Context: You have no pending assignments.] ";
+            }
+            if (msg.includes("eco") || msg.includes("impact") || msg.includes("water") || msg.includes("carbon")) {
+                const user = await User.findById(userId);
+                if (user?.eco_stats) {
+                    campusContext += `[Context: User's Eco-Stats: ${user.eco_stats.total_pages_saved} pages saved, ${user.eco_stats.total_water_saved}L water saved, ${user.eco_stats.total_co2_prevented}kg CO2 prevented.] `;
                 }
-            } catch (aiErr) {
-                console.error("Grok AI Error:", aiErr);
-                response = "I'm currently unable to connect to the brain network. Please check your internet or try again in a bit.";
             }
+            if (msg.includes("paper") || msg.includes("previous")) {
+                const count = await QuestionPaper.countDocuments();
+                campusContext += `[Context: We have ${count} previous year question papers available in the dashboard.] `;
+            }
+        } catch (dbErr) {
+            console.warn("DB Context gathering failed:", dbErr);
         }
 
-        res.json({ response });
+        // --- 2. GROK AI AGENT RESPONSE ---
+        if (!process.env.GROK_API_KEY) {
+            return res.json({ response: "Welcome! I'm your Campus-Pace helper. [SYSTEM NOTE: Grok API Key is missing in Environment Variables. Please add GROK_API_KEY to Vercel to activate my full brain!]" });
+        }
+
+        const postData = JSON.stringify({
+            model: "grok-beta",
+            messages: [
+                { 
+                    role: "system", 
+                    content: `You are Campus-Pace AI, a high-performance Grok-beta powered study agent. 
+                    PERSONALITY: You are witty, encouraging, and highly intelligent. 
+                    RULES: 
+                    1. Focus strictly on academic and campus-related topics.
+                    2. Use the local context provided in modern markdown formatting.
+                    3. If a user asks about local info (notices, assignments), use the [Context] tags provided below.
+                    4. Keep responses concise but impactful.` 
+                },
+                { role: "user", content: `${campusContext}\n\nUser Question: ${message}` }
+            ],
+            temperature: 0.7
+        });
+
+        const options = {
+            hostname: 'api.x.ai',
+            path: '/v1/chat/completions',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.GROK_API_KEY}`,
+                'Content-Length': Buffer.byteLength(postData)
+            }
+        };
+
+        const aiReq = https.request(options, (aiRes) => {
+            let body = '';
+            aiRes.on('data', (chunk) => body += chunk);
+            aiRes.on('end', () => {
+                try {
+                    const data = JSON.parse(body);
+                    if (aiRes.statusCode === 200) {
+                        res.json({ response: data.choices?.[0]?.message?.content || "I'm having a quiet moment. Try again!" });
+                    } else {
+                        console.error("Grok API Error Status:", aiRes.statusCode, body);
+                        res.json({ response: `Grok is currently unavailable (Error ${aiRes.statusCode}). I'll try my best to help manually if you have a simple question!` });
+                    }
+                } catch (e) {
+                    res.json({ response: "I encountered a processing error. Please try a simpler question." });
+                }
+            });
+        });
+
+        aiReq.on('error', (e) => {
+            console.error("Grok Request Error:", e);
+            res.json({ response: "My connection to the AI network was interrupted. Please check your internet or try again later." });
+        });
+
+        aiReq.write(postData);
+        aiReq.end();
+
     } catch (err: any) {
         res.status(500).json({ error: "AI Assistant is currently resting. Please try again later." });
     }
