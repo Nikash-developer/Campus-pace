@@ -14,9 +14,9 @@ export const handleChatOptions = async (req: any, res: any) => {
         if (!message) return res.status(400).json({ error: "Message is required" });
 
         const msg = message.toLowerCase();
-        let response = "I'm not sure about that. Try asking about your 'assignments', 'notices', 'eco stats', or 'question papers'.";
+        let response = "";
 
-        // Logic for Dynamic AI Responses
+        // --- 1. LOCAL KEYWORD LOGIC (Campus Specific) ---
         if (msg.includes("notice") || msg.includes("announcement")) {
             const latestNotice = await Notice.findOne().sort({ createdAt: -1 });
             response = latestNotice
@@ -50,7 +50,41 @@ export const handleChatOptions = async (req: any, res: any) => {
             response = "You can navigate using the sidebar. 'Dashboard' for overview, 'Courses' for your classes, 'Eco-Impact' for your stats, and 'History' for past notices.";
         }
         else if (msg.includes("hello") || msg.includes("hi ") || msg.startsWith("hi")) {
-            response = `Hello ${req.user.name.split(' ')[0]}! I'm your Green-Sync AI. How can I assist your studies today?`;
+            response = `Hello ${req.user.name.split(' ')[0]}! I'm your Campus-Pace AI. How can I assist your studies today?`;
+        }
+
+        // --- 2. GROK AI INTEGRATION (Study Queries) ---
+        if (!response) {
+            try {
+                const grokRes = await fetch("https://api.x.ai/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${process.env.GROK_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: "grok-beta",
+                        messages: [
+                            { 
+                                role: "system", 
+                                content: "You are Campus-Pace AI, a highly intelligent and specialized study assistant. Focus strictly on academic and study-related queries. If a user asks something unrelated to education or the campus, politely steer them back to their studies. Be concise, encouraging, and accurate." 
+                            },
+                            { role: "user", content: message }
+                        ],
+                        temperature: 0.7
+                    })
+                });
+
+                if (grokRes.ok) {
+                    const data = await grokRes.json();
+                    response = data.choices?.[0]?.message?.content || "I'm having trouble thinking right now. Please try again.";
+                } else {
+                    response = "Our study assistant is currently busy with other students. Try asking a campus-specific question instead!";
+                }
+            } catch (aiErr) {
+                console.error("Grok AI Error:", aiErr);
+                response = "I'm currently unable to connect to the brain network. Please check your internet or try again in a bit.";
+            }
         }
 
         res.json({ response });
